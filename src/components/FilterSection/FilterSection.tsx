@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { IconX, IconChevronRight, IconSearch, IconChevronLeft } from '@tabler/icons-react';
 import { FilterCondition, FilterOperator, FieldType } from '../../engine/types';
 import { getOperatorsForType } from '../../config/operators';
@@ -7,10 +7,12 @@ import styles from './FilterSection.module.css';
 
 interface Props {
   filters: FilterCondition[];
+  prefilledFieldId?: string | null;
+  onPrefilledConsumed?: () => void;
   onAdd: (condition: Omit<FilterCondition, 'id'>) => void;
   onUpdate: (id: string, updates: Partial<FilterCondition>) => void;
   onRemove: (id: string) => void;
-  onClear: () => void;
+  onHide: () => void;
 }
 
 function getFieldTypeIcon(type: FieldType): string {
@@ -37,13 +39,15 @@ function getPillLabel(filter: FilterCondition, fields: ReturnType<typeof useConf
 interface FilterPickerProps {
   onSave: (condition: Omit<FilterCondition, 'id'>) => void;
   initial?: FilterCondition;
+  initialFieldId?: string | null;
 }
 
-function FilterPicker({ onSave, initial }: FilterPickerProps) {
+function FilterPicker({ onSave, initial, initialFieldId }: FilterPickerProps) {
   const { config } = useConfig();
-  const [step, setStep] = useState<'field' | 'value'>(initial ? 'value' : 'field');
+  const startField = initial?.fieldId ?? initialFieldId ?? null;
+  const [step, setStep] = useState<'field' | 'value'>(startField ? 'value' : 'field');
   const [search, setSearch] = useState('');
-  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(initial?.fieldId ?? null);
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(startField);
   const [operator, setOperator] = useState<FilterOperator>(initial?.operator ?? 'equals');
   const [value, setValue] = useState<string>(initial?.value !== null && initial?.value !== undefined ? String(initial.value) : '');
   const [value2, setValue2] = useState<string>(initial?.value2 !== null && initial?.value2 !== undefined ? String(initial.value2) : '');
@@ -53,10 +57,21 @@ function FilterPicker({ onSave, initial }: FilterPickerProps) {
 
   const selectedField = config.fields.find(f => f.id === selectedFieldId);
   const operators = selectedField ? getOperatorsForType(selectedField.type) : [];
+  const filteredFields = config.fields.filter(f => f.label.toLowerCase().includes(search.toLowerCase()));
 
-  const filteredFields = config.fields.filter(f =>
-    f.label.toLowerCase().includes(search.toLowerCase())
-  );
+  // When initialFieldId changes (prefilled from DataSection), reset to value step
+  useEffect(() => {
+    if (initialFieldId && !initial) {
+      const field = config.fields.find(f => f.id === initialFieldId);
+      if (field) {
+        const ops = getOperatorsForType(field.type);
+        setOperator(ops[0]?.value ?? 'equals');
+        setValue(''); setValue2(''); setSelectedOptions([]);
+        setSelectedFieldId(initialFieldId);
+        setStep('value');
+      }
+    }
+  }, [initialFieldId, initial, config.fields]);
 
   const handleFieldSelect = (fieldId: string) => {
     setSelectedFieldId(fieldId);
@@ -64,17 +79,13 @@ function FilterPicker({ onSave, initial }: FilterPickerProps) {
     if (field) {
       const ops = getOperatorsForType(field.type);
       setOperator(ops[0]?.value ?? 'equals');
-      setValue('');
-      setValue2('');
-      setSelectedOptions([]);
+      setValue(''); setValue2(''); setSelectedOptions([]);
     }
     setStep('value');
   };
 
   const toggleOption = (opt: string) => {
-    setSelectedOptions(prev =>
-      prev.includes(opt) ? prev.filter(o => o !== opt) : [...prev, opt]
-    );
+    setSelectedOptions(prev => prev.includes(opt) ? prev.filter(o => o !== opt) : [...prev, opt]);
   };
 
   const needsValue = !['is_null', 'is_not_null'].includes(operator);
@@ -93,11 +104,9 @@ function FilterPicker({ onSave, initial }: FilterPickerProps) {
     if (!selectedFieldId || !canSave) return;
     let finalValue: string | number | null = null;
     let finalValue2: string | number | null = null;
-
     if (needsValue) {
-      if (isSelectType) {
-        finalValue = selectedOptions[0] ?? null;
-      } else if (selectedField?.type === 'number') {
+      if (isSelectType) { finalValue = selectedOptions[0] ?? null; }
+      else if (selectedField?.type === 'number') {
         finalValue = value !== '' ? parseFloat(value) : null;
         if (isBetween) finalValue2 = value2 !== '' ? parseFloat(value2) : null;
       } else {
@@ -105,7 +114,6 @@ function FilterPicker({ onSave, initial }: FilterPickerProps) {
         if (isBetween) finalValue2 = value2 || null;
       }
     }
-
     onSave({ fieldId: selectedFieldId, operator, value: finalValue, value2: finalValue2 });
   };
 
@@ -146,7 +154,7 @@ function FilterPicker({ onSave, initial }: FilterPickerProps) {
           <IconChevronLeft size={16} />
         </button>
         <span className={styles.valuePanelFieldName}>{selectedField?.label}</span>
-        <span style={{ color: '#999', fontSize: 12 }}>|</span>
+        <span className={styles.headerSep}>|</span>
         <select
           className={styles.operatorSelect}
           value={operator}
@@ -161,20 +169,22 @@ function FilterPicker({ onSave, initial }: FilterPickerProps) {
 
       <div className={styles.valueBody}>
         {needsValue && isSelectType && (
-          listOptions.map(opt => (
-            <label key={opt.value} className={styles.checkboxItem}>
-              <input
-                type="checkbox"
-                checked={selectedOptions.includes(opt.value)}
-                onChange={() => toggleOption(opt.value)}
-              />
-              {opt.label}
-            </label>
-          ))
+          <div className={styles.checkboxList}>
+            {listOptions.map(opt => (
+              <label key={opt.value} className={styles.checkboxItem}>
+                <input
+                  type="checkbox"
+                  checked={selectedOptions.includes(opt.value)}
+                  onChange={() => toggleOption(opt.value)}
+                />
+                {opt.label}
+              </label>
+            ))}
+          </div>
         )}
         {needsValue && !isSelectType && !isBetween && (
           <input
-            className={selectedField?.type === 'number' ? styles.numberValueInput : styles.textValueInput}
+            className={styles.textValueInput}
             type={selectedField?.type === 'number' ? 'number' : selectedField?.type === 'date' ? 'date' : 'text'}
             placeholder={selectedField?.type === 'date' ? 'YYYY-MM-DD' : 'Entrez une valeur…'}
             value={value}
@@ -183,7 +193,7 @@ function FilterPicker({ onSave, initial }: FilterPickerProps) {
           />
         )}
         {needsValue && !isSelectType && isBetween && (
-          <div>
+          <div className={styles.betweenWrap}>
             <input
               className={styles.textValueInput}
               type={selectedField?.type === 'number' ? 'number' : 'text'}
@@ -198,19 +208,16 @@ function FilterPicker({ onSave, initial }: FilterPickerProps) {
               placeholder="Valeur max"
               value={value2}
               onChange={e => setValue2(e.target.value)}
-              style={{ marginTop: 4 }}
             />
           </div>
         )}
         {!needsValue && (
-          <div style={{ padding: '12px 14px', fontSize: 13, color: '#999' }}>
-            Aucune valeur requise pour cet opérateur
-          </div>
+          <div className={styles.noValueHint}>Aucune valeur requise</div>
         )}
       </div>
 
       <button
-        className={`${styles.addFilterBtn} ${canSave ? styles.addFilterBtnActive : styles.addFilterBtnDisabled}`}
+        className={canSave ? styles.addFilterBtnActive : styles.addFilterBtnDisabled}
         onClick={handleSave}
         disabled={!canSave}
       >
@@ -228,13 +235,9 @@ function FilterPill({ filter, onUpdate, onRemove }: {
   const [open, setOpen] = useState(false);
   const { config } = useConfig();
   const ref = useRef<HTMLDivElement>(null);
-
   const handleClickOutside = useCallback((e: MouseEvent) => {
-    if (ref.current && !ref.current.contains(e.target as Node)) {
-      setOpen(false);
-    }
+    if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
   }, []);
-
   useEffect(() => {
     if (open) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -250,25 +253,28 @@ function FilterPill({ filter, onUpdate, onRemove }: {
       </span>
       {open && (
         <div className={styles.dropdown}>
-          <FilterPicker
-            initial={filter}
-            onSave={u => { onUpdate(u); setOpen(false); }}
-          />
+          <FilterPicker initial={filter} onSave={u => { onUpdate(u); setOpen(false); }} />
         </div>
       )}
     </div>
   );
 }
 
-export function FilterSection({ filters, onAdd, onUpdate, onRemove, onClear }: Props) {
+export function FilterSection({ filters, prefilledFieldId, onPrefilledConsumed, onAdd, onUpdate, onRemove, onHide }: Props) {
   const [open, setOpen] = useState(false);
   const addRef = useRef<HTMLDivElement>(null);
+
+  // Auto-open picker when prefilled field arrives
+  useEffect(() => {
+    if (prefilledFieldId) { setOpen(true); }
+  }, [prefilledFieldId]);
 
   const handleClickOutside = useCallback((e: MouseEvent) => {
     if (addRef.current && !addRef.current.contains(e.target as Node)) {
       setOpen(false);
+      onPrefilledConsumed?.();
     }
-  }, []);
+  }, [onPrefilledConsumed]);
 
   useEffect(() => {
     if (open) document.addEventListener('mousedown', handleClickOutside);
@@ -279,7 +285,7 @@ export function FilterSection({ filters, onAdd, onUpdate, onRemove, onClear }: P
     <div className={styles.wrapper}>
       <div className={styles.labelRow}>
         <span className={styles.label}>Filtre</span>
-        <button className={styles.closeBtn} onClick={onClear} title="Supprimer les filtres">
+        <button className={styles.closeBtn} onClick={onHide} title="Masquer les filtres">
           <IconX size={14} />
         </button>
       </div>
@@ -290,9 +296,7 @@ export function FilterSection({ filters, onAdd, onUpdate, onRemove, onClear }: P
           ))}
           <div className={styles.dropdownAnchor} ref={addRef}>
             {filters.length > 0 ? (
-              <button className={styles.addBtn} onClick={() => setOpen(o => !o)} title="Ajouter un filtre">
-                +
-              </button>
+              <button className={styles.addBtn} onClick={() => setOpen(o => !o)} title="Ajouter un filtre">+</button>
             ) : (
               <button className={styles.emptyBtn} onClick={() => setOpen(o => !o)}>
                 Ajoutez des filtres pour affiner votre réponse
@@ -300,7 +304,10 @@ export function FilterSection({ filters, onAdd, onUpdate, onRemove, onClear }: P
             )}
             {open && (
               <div className={styles.dropdown}>
-                <FilterPicker onSave={c => { onAdd(c); setOpen(false); }} />
+                <FilterPicker
+                  initialFieldId={prefilledFieldId}
+                  onSave={c => { onAdd(c); setOpen(false); onPrefilledConsumed?.(); }}
+                />
               </div>
             )}
           </div>

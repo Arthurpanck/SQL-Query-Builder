@@ -1,333 +1,167 @@
-/* Metabase exact: filter color #7172AD */
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  position: relative;
-}
+/* Metabase filter color: #7172AD */
+.wrapper { display: flex; flex-direction: column; gap: 6px; }
 
 .labelRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2px;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 2px;
 }
 
-.label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #7172ad;
-}
+.label { font-size: 14px; font-weight: 700; color: #7172ad; }
 
 .closeBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  color: #cbc7e4;
-  cursor: pointer;
-  padding: 2px;
-  border-radius: 4px;
-  transition: color 0.15s;
-  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; color: #cbc7e4; cursor: pointer;
+  padding: 2px; border-radius: 4px; transition: color 0.15s; line-height: 1;
 }
 .closeBtn:hover { color: #7172ad; }
 
-.sectionOuter {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0;
-}
+.sectionOuter { display: flex; align-items: center; gap: 6px; }
 
 .section {
-  flex: 1;
-  background: #eeebf4;
-  border-radius: 8px;
-  padding: 14px 18px;
-  min-height: 58px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  overflow: visible;
-  position: relative;
+  flex: 1; background: #ebe8f4; border-radius: 8px;
+  padding: 14px 18px; min-height: 58px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  overflow: visible; position: relative;
 }
 
-.arrowBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 58px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #333;
-  flex-shrink: 0;
-  padding: 0 4px;
-}
-.arrowBtn:hover { color: #000; }
-
+/* Empty state button — transparent bg, just border (matches Metabase) */
 .emptyBtn {
-  display: inline-flex;
-  align-items: center;
-  background: #fff;
-  border: 1px solid #cbc6e4;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 400;
-  color: #7172ad;
-  cursor: pointer;
-  transition: background 0.15s;
+  display: inline-flex; align-items: center;
+  background: transparent;
+  border: 1px solid #9e99c3; border-radius: 6px;
+  padding: 8px 16px; font-size: 14px; font-weight: 400;
+  color: #7172ad; cursor: pointer; transition: background 0.12s;
 }
-.emptyBtn:hover { background: #f4f2fb; }
+.emptyBtn:hover { background: rgba(113,114,173,0.1); }
 
+/* Filled filter pills — purple bg, white text like Metabase */
 .pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #7172ad;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  cursor: pointer;
-  transition: filter 0.15s;
-  user-select: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #7172ad; border: none; border-radius: 6px;
+  padding: 6px 10px; font-size: 13px; font-weight: 700;
+  color: #fff; cursor: pointer; user-select: none; transition: filter 0.12s;
 }
-.pill:hover { filter: brightness(1.1); }
+.pill:hover { filter: brightness(1.12); }
 
 .pillRemove {
-  display: flex;
-  align-items: center;
-  color: #fff;
-  transition: opacity 0.15s;
-  cursor: pointer;
-  padding: 0;
-  background: none;
-  border: none;
-  line-height: 1;
-  opacity: 0.8;
+  display: flex; align-items: center; opacity: 0.7;
+  cursor: pointer; padding: 0; background: none; border: none;
+  line-height: 1; color: #fff; transition: opacity 0.12s;
 }
 .pillRemove:hover { opacity: 1; }
 
+/* Small + button when filters already exist */
 .addBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  background: #7172ad;
-  border: none;
-  border-radius: 50%;
-  color: #fff;
-  cursor: pointer;
-  transition: filter 0.15s;
-  flex-shrink: 0;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  background: rgba(113,114,173,0.12); border: 1px solid #9e99c3;
+  border-radius: 50%; color: #7172ad;
+  cursor: pointer; font-size: 18px; font-weight: 300; line-height: 1;
+  transition: background 0.12s; flex-shrink: 0;
 }
-.addBtn:hover { filter: brightness(1.1); }
+.addBtn:hover { background: rgba(113,114,173,0.25); }
 
-.dropdownAnchor {
-  position: relative;
+/* Arrow btn */
+.arrowBtn {
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; background: none; border: none;
+  cursor: pointer; color: #555; flex-shrink: 0; transition: color 0.12s;
 }
+.arrowBtn:hover { color: #000; }
+
+/* ═══ Filter picker dropdown ═══ */
+.dropdownAnchor { position: relative; }
 
 .dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  z-index: 9999;
-  background: #fff;
-  border-radius: 10px;
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 9999;
+  background: #fff; border-radius: 10px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
-  min-width: 380px;
-  overflow: hidden;
-  border: 1px solid #ebebeb;
+  min-width: 340px; border: 1px solid #ebebeb; overflow: hidden;
 }
 
-.fieldListPanel {
-  display: flex;
-  flex-direction: column;
-}
+/* Step 1: Field list */
+.fieldListPanel { display: flex; flex-direction: column; max-height: 380px; }
 
 .searchBox {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #f0f0f0;
-  gap: 10px;
-  background: #fafafa;
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px; border-bottom: 1px solid #f0f0f0;
 }
 
 .searchInput {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-size: 14px;
-  font-weight: 400;
-  color: #2e353b;
-  background: transparent;
+  flex: 1; border: none; outline: none;
+  font-size: 14px; color: #2e353b; background: transparent;
 }
+.searchInput::placeholder { color: #b0b4bb; }
 
-.searchInput::placeholder { color: #aaa; }
-
-.fieldList {
-  max-height: 280px;
-  overflow-y: auto;
-}
+.fieldList { overflow-y: auto; max-height: 300px; padding: 6px 0; }
 
 .fieldItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 400;
-  color: #2e353b;
-  background: #fff;
-  border: none;
-  width: 100%;
-  text-align: left;
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 9px 16px; background: none; border: none;
+  font-size: 14px; color: #2e353b; cursor: pointer; text-align: left;
   transition: background 0.1s;
-  line-height: 1.3;
 }
-.fieldItem:hover { background: #f4f2fb; }
+.fieldItem:hover { background: #f5f5f5; }
 
 .fieldTypeIcon {
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: #7172ad;
-  flex-shrink: 0;
-  border: 1.5px solid #c8c6e0;
-  border-radius: 3px;
-  background: #f4f2fb;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; background: #ebe8f4; border-radius: 4px;
+  font-size: 11px; font-weight: 700; color: #7172ad; flex-shrink: 0;
 }
 
-.valuePanel {
-  display: flex;
-  flex-direction: column;
-  min-width: 380px;
-}
+/* Step 2: Value panel */
+.valuePanel { display: flex; flex-direction: column; }
 
 .valuePanelHeader {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #f0f0f0;
-  gap: 8px;
-  background: #fafafa;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-bottom: 1px solid #f0f0f0;
 }
 
 .backBtn {
-  display: flex;
-  align-items: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #7172ad;
-  padding: 2px;
-  line-height: 1;
-  border-radius: 4px;
-  transition: background 0.12s;
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; background: none; border: none;
+  border-radius: 6px; cursor: pointer; color: #696e7b;
+  transition: background 0.1s; flex-shrink: 0;
 }
-.backBtn:hover { background: #eeebf4; }
+.backBtn:hover { background: #f0f0f0; }
 
-.valuePanelFieldName {
-  font-size: 14px;
-  font-weight: 700;
-  color: #2e353b;
-  flex: 1;
-}
+.valuePanelFieldName { font-size: 14px; font-weight: 700; color: #2e353b; }
+
+.headerSep { color: #d0d0d0; font-size: 14px; }
 
 .operatorSelect {
-  border: 1px solid #d0d0d0;
-  border-radius: 6px;
-  outline: none;
-  font-size: 13px;
-  color: #7172ad;
-  background: #fff;
-  cursor: pointer;
-  font-weight: 500;
-  padding: 4px 8px;
-  transition: border-color 0.12s;
+  border: 1px solid #e0e0e0; border-radius: 6px;
+  padding: 5px 10px; font-size: 13px; color: #2e353b;
+  background: #fff; cursor: pointer; outline: none;
 }
-.operatorSelect:hover { border-color: #7172ad; }
 
-.valueBody {
-  padding: 6px 0;
-  max-height: 260px;
-  overflow-y: auto;
-}
+.valueBody { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+
+.checkboxList { display: flex; flex-direction: column; gap: 2px; max-height: 220px; overflow-y: auto; }
 
 .checkboxItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 400;
-  color: #2e353b;
-  transition: background 0.1s;
-  line-height: 1.3;
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 6px; cursor: pointer;
+  font-size: 14px; color: #2e353b; transition: background 0.1s;
 }
-.checkboxItem:hover { background: #f4f2fb; }
+.checkboxItem:hover { background: #f5f5f5; }
+.checkboxItem input[type="checkbox"] { width: 16px; height: 16px; accent-color: #7172ad; cursor: pointer; }
 
-.checkboxItem input[type="checkbox"] {
-  accent-color: #7172ad;
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  flex-shrink: 0;
+.textValueInput {
+  width: 100%; border: 1px solid #e0e0e0; border-radius: 6px;
+  padding: 9px 12px; font-size: 14px; color: #2e353b;
+  outline: none; box-sizing: border-box;
 }
+.textValueInput:focus { border-color: #7172ad; box-shadow: 0 0 0 2px rgba(113,114,173,0.12); }
 
-.textValueInput,
-.numberValueInput {
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid #e8e8e8;
-  outline: none;
-  font-size: 14px;
-  font-weight: 400;
-  padding: 12px 16px;
-  color: #2e353b;
-  box-sizing: border-box;
-  background: transparent;
-}
-.textValueInput:focus, .numberValueInput:focus {
-  border-bottom-color: #7172ad;
-}
+.betweenWrap { display: flex; flex-direction: column; gap: 6px; }
 
-.addFilterBtn {
-  margin: 10px 16px;
-  padding: 10px 0;
-  border-radius: 6px;
-  border: none;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.15s;
-  width: calc(100% - 32px);
+.noValueHint { padding: 8px; font-size: 13px; color: #949599; }
+
+/* Add/confirm button */
+.addFilterBtnActive, .addFilterBtnDisabled {
+  width: 100%; padding: 12px; border: none; cursor: pointer;
+  font-size: 14px; font-weight: 700; transition: background 0.12s;
 }
-.addFilterBtnActive {
-  background: #509ee3;
-  color: #fff;
-}
-.addFilterBtnActive:hover { background: #3d8ed4; }
-.addFilterBtnDisabled {
-  background: #e8e8e8;
-  color: #aaa;
-  cursor: not-allowed;
-}
+.addFilterBtnActive { background: #7172ad; color: #fff; }
+.addFilterBtnActive:hover { background: #5e5f9a; }
+.addFilterBtnDisabled { background: #f0f0f0; color: #b0b4bb; cursor: not-allowed; }

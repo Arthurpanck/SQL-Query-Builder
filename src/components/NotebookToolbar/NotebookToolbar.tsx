@@ -1,43 +1,46 @@
-import { IconArrowsSort, IconRowInsertBottom, IconChartBar } from '@tabler/icons-react';
+import { IconFilter, IconSum, IconArrowsSort, IconRowInsertBottom, IconChartBar } from '@tabler/icons-react';
 import styles from './NotebookToolbar.module.css';
 
 interface Props {
-  hasFilters: boolean;
-  hasMetrics: boolean;
-  hasSorts: boolean;
-  hasLimit: boolean;
+  showFilter: boolean;
+  showSummarize: boolean;
   showSort: boolean;
   showLimit: boolean;
+  onToggleFilter: () => void;
+  onToggleSummarize: () => void;
   onToggleSort: () => void;
   onToggleLimit: () => void;
 }
 
-export function NotebookToolbar({ hasSorts, hasLimit, showSort, showLimit, onToggleSort, onToggleLimit }: Props) {
-  // A button disappears when its section is active (expanded)
-  const sortActive = showSort || hasSorts;
-  const limitActive = showLimit || hasLimit;
+export function NotebookToolbar({ showFilter, showSummarize, showSort, showLimit, onToggleFilter, onToggleSummarize, onToggleSort, onToggleLimit }: Props) {
+  const hasHiddenSections = !showFilter || !showSummarize || !showSort || !showLimit;
 
   return (
     <div className={styles.toolbar}>
-      {/* Only show mini buttons for sections that are NOT currently expanded */}
-      {(!sortActive || !limitActive) && (
+      {hasHiddenSections && (
         <div className={styles.miniButtons}>
-          {!sortActive && (
-            <button
-              className={styles.miniBtn}
-              onClick={onToggleSort}
-              title="Trier"
-            >
-              <IconArrowsSort size={16} stroke={1.8} />
+          {!showFilter && (
+            <button className={`${styles.miniBtn} ${styles.filterBtn}`} onClick={onToggleFilter} title="Afficher les filtres">
+              <IconFilter size={15} stroke={1.8} />
+              <span>Filtre</span>
             </button>
           )}
-          {!limitActive && (
-            <button
-              className={styles.miniBtn}
-              onClick={onToggleLimit}
-              title="Limite de lignes"
-            >
-              <IconRowInsertBottom size={16} stroke={1.8} />
+          {!showSummarize && (
+            <button className={`${styles.miniBtn} ${styles.summarizeBtn}`} onClick={onToggleSummarize} title="Afficher le résumé">
+              <IconSum size={15} stroke={1.8} />
+              <span>Résumer</span>
+            </button>
+          )}
+          {!showSort && (
+            <button className={`${styles.miniBtn} ${styles.neutralBtn}`} onClick={onToggleSort} title="Trier">
+              <IconArrowsSort size={15} stroke={1.8} />
+              <span>Trier</span>
+            </button>
+          )}
+          {!showLimit && (
+            <button className={`${styles.miniBtn} ${styles.neutralBtn}`} onClick={onToggleLimit} title="Limite de lignes">
+              <IconRowInsertBottom size={15} stroke={1.8} />
+              <span>Limite de lignes</span>
             </button>
           )}
         </div>

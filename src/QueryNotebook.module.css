@@ -3,7 +3,8 @@
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  max-width: 860px;
+  /* 30% wider than before (was 860px) */
+  max-width: 1120px;
 }
 
 .sections {

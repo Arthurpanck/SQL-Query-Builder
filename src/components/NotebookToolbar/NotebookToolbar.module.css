@@ -1,51 +1,23 @@
-﻿.toolbar {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.toolbar { display: flex; flex-direction: column; gap: 10px; }
 
-/* Mini icon buttons (Sort + Limit) */
-.miniButtons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.miniButtons { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .miniBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: #f5f6f8;
-  border: none;
-  border-radius: 6px;
-  color: #949599;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 8px; border: none;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: filter 0.12s;
 }
-.miniBtn:hover { background: #e9eaec; color: #555; }
-.miniBtnActive {
-  background: #e0e5ec;
-  color: #509ee3;
-}
+.miniBtn:hover { filter: brightness(0.95); }
+
+.filterBtn   { background: #eeebf4; color: #7172ad; }
+.summarizeBtn{ background: #e6f3d6; color: #509d31; }
+.neutralBtn  { background: #f5f6f8; color: #696e7b; }
 
 .visualizeBtn {
-  display: inline-flex;
-  align-self: flex-start;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  min-width: 250px;
-  justify-content: center;
-  border-radius: 8px;
-  border: none;
-  background: #509ee3;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.15s;
+  display: inline-flex; align-self: flex-start; align-items: center; gap: 6px;
+  padding: 10px 22px; border-radius: 8px; border: none;
+  background: #509ee3; color: #fff; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s;
 }
 .visualizeBtn:hover { background: #3d8ed4; }
