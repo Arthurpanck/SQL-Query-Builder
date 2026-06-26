@@ -13,38 +13,13 @@ interface Props {
   hasMetrics: boolean;
 }
 
-export function NotebookToolbar({ hasFilters, hasMetrics }: Props) {
+export function NotebookToolbar({ hasFilters: _hasFilters, hasMetrics: _hasMetrics }: Props) {
   const tools = [
-    {
-      id: 'filter',
-      label: 'Filtre',
-      Icon: IconFilter,
-      colorClass: hasFilters ? styles.filter : styles.inactive,
-    },
-    {
-      id: 'summarize',
-      label: 'Résumer',
-      Icon: IconSum,
-      colorClass: hasMetrics ? styles.summarize : styles.inactive,
-    },
-    {
-      id: 'join',
-      label: 'Joindre des données',
-      Icon: IconArrowsJoin,
-      colorClass: styles.inactive,
-    },
-    {
-      id: 'sort',
-      label: 'Trier',
-      Icon: IconArrowsSort,
-      colorClass: styles.inactive,
-    },
-    {
-      id: 'limit',
-      label: 'Limite de lignes',
-      Icon: IconRowInsertBottom,
-      colorClass: styles.inactive,
-    },
+    { id: 'filter',    label: 'Filtre',             Icon: IconFilter,        colorClass: styles.filter },
+    { id: 'summarize', label: 'Résumer',             Icon: IconSum,           colorClass: styles.summarize },
+    { id: 'join',      label: 'Joindre des données', Icon: IconArrowsJoin,    colorClass: styles.join },
+    { id: 'sort',      label: 'Trier',               Icon: IconArrowsSort,    colorClass: styles.inactive },
+    { id: 'limit',     label: 'Limite de lignes',    Icon: IconRowInsertBottom, colorClass: styles.inactive },
   ];
 
   return (

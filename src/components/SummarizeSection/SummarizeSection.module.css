@@ -41,12 +41,13 @@
 .parLabel {
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  padding: 0 10px;
   font-size: 13px;
   font-weight: 700;
   color: #696e7b;
   background: #f0faf0;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* Right block: group-by */

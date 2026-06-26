@@ -4,11 +4,11 @@ export default function App() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#f8f9fc',
+      background: '#fff',
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'center',
-      padding: '40px 20px',
+      padding: '32px 24px',
     }}>
       <QueryNotebook />
     </div>
