@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Popover, Select, Stack, Button, Group, Text } from '@mantine/core';
-import { IconPlus, IconX, IconChevronRight } from '@tabler/icons-react';
+import { Popover, Select, Stack, Button, Group } from '@mantine/core';
+import { IconPlus, IconX } from '@tabler/icons-react';
 import { Metric, GroupBy, AggregationType } from '../../engine/types';
 import { fields, AGGREGATION_OPTIONS } from '../../config/fields';
 import styles from './SummarizeSection.module.css';
@@ -21,20 +21,15 @@ function getMetricLabel(m: Metric): string {
   return `${agg?.label ?? m.aggregation} de ${field?.label ?? m.fieldId}`;
 }
 
-function MetricEditor({
-  onSave,
-  onCancel,
-}: {
+function MetricEditor({ onSave, onCancel }: {
   onSave: (m: Omit<Metric, 'id'>) => void;
   onCancel: () => void;
 }) {
   const [aggregation, setAggregation] = useState<AggregationType | null>(null);
   const [fieldId, setFieldId] = useState<string | null>(null);
-
   const aggOption = AGGREGATION_OPTIONS.find(a => a.value === aggregation);
   const needsField = aggOption?.fieldRequired ?? false;
   const numericFields = fields.filter(f => f.type === 'number');
-
   const canSave = aggregation && (!needsField || fieldId);
 
   return (
@@ -60,12 +55,7 @@ function MetricEditor({
       )}
       <Group gap="xs" justify="flex-end" mt="xs">
         <Button variant="subtle" size="xs" color="gray" onClick={onCancel}>Annuler</Button>
-        <Button
-          size="xs"
-          disabled={!canSave}
-          onClick={() => canSave && onSave({ aggregation: aggregation!, fieldId })}
-          color="green"
-        >
+        <Button size="xs" disabled={!canSave} onClick={() => canSave && onSave({ aggregation: aggregation!, fieldId })} color="green">
           Ajouter
         </Button>
       </Group>
@@ -73,116 +63,120 @@ function MetricEditor({
   );
 }
 
-function AddMetricButton({ onAdd }: { onAdd: Props['onAddMetric'] }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <Popover opened={open} onClose={() => setOpen(false)} position="bottom-start" withArrow shadow="md" trapFocus>
-      <Popover.Target>
-        <button className={styles.addMetricBtn} onClick={() => setOpen(o => !o)}>
-          <IconPlus size={13} />
-          Ajouter une métrique
-        </button>
-      </Popover.Target>
-      <Popover.Dropdown p={0}>
-        <MetricEditor
-          onSave={m => { onAdd(m); setOpen(false); }}
-          onCancel={() => setOpen(false)}
-        />
-      </Popover.Dropdown>
-    </Popover>
-  );
-}
-
-function AddGroupButton({ onAdd, existing }: { onAdd: Props['onAddGroup']; existing: string[] }) {
-  const [open, setOpen] = useState(false);
+function GroupEditor({ onSave, onCancel, existing }: {
+  onSave: (g: Omit<GroupBy, 'id'>) => void;
+  onCancel: () => void;
+  existing: string[];
+}) {
   const [fieldId, setFieldId] = useState<string | null>(null);
   const available = fields.filter(f => !existing.includes(f.id));
-
   return (
-    <Popover opened={open} onClose={() => setOpen(false)} position="bottom-start" withArrow shadow="md" trapFocus>
-      <Popover.Target>
-        <button className={styles.addGroupBtn} onClick={() => setOpen(o => !o)}>
-          <IconPlus size={13} />
-          Ajouter un regroupement
-        </button>
-      </Popover.Target>
-      <Popover.Dropdown p={0}>
-        <Stack gap="sm" p="md" style={{ minWidth: 240 }}>
-          <Select
-            label="Regrouper par"
-            placeholder="Choisir un champ…"
-            data={available.map(f => ({ value: f.id, label: f.label }))}
-            value={fieldId}
-            onChange={setFieldId}
-            searchable
-            size="sm"
-          />
-          <Group gap="xs" justify="flex-end">
-            <Button variant="subtle" size="xs" color="gray" onClick={() => setOpen(false)}>Annuler</Button>
-            <Button
-              size="xs"
-              disabled={!fieldId}
-              onClick={() => { if (fieldId) { onAdd({ fieldId }); setOpen(false); setFieldId(null); } }}
-              color="blue"
-            >
-              Ajouter
-            </Button>
-          </Group>
-        </Stack>
-      </Popover.Dropdown>
-    </Popover>
+    <Stack gap="sm" p="md" style={{ minWidth: 240 }}>
+      <Select
+        label="Regrouper par"
+        placeholder="Choisir un champ…"
+        data={available.map(f => ({ value: f.id, label: f.label }))}
+        value={fieldId}
+        onChange={setFieldId}
+        searchable
+        size="sm"
+      />
+      <Group gap="xs" justify="flex-end">
+        <Button variant="subtle" size="xs" color="gray" onClick={onCancel}>Annuler</Button>
+        <Button size="xs" disabled={!fieldId} onClick={() => fieldId && onSave({ fieldId })} color="green">
+          Ajouter
+        </Button>
+      </Group>
+    </Stack>
   );
 }
 
 export function SummarizeSection({ metrics, groups, onAddMetric, onRemoveMetric, onAddGroup, onRemoveGroup }: Props) {
-  const hasMetrics = metrics.length > 0;
-  const hasGroups = groups.length > 0;
+  const [metricOpen, setMetricOpen] = useState(false);
+  const [groupOpen, setGroupOpen] = useState(false);
 
   return (
-    <div className={styles.section}>
-      <div className={styles.content}>
-        <Text className={styles.label}>Résumer</Text>
-        <div className={styles.row}>
+    <div className={styles.wrapper}>
+      <div className={styles.labelRow}>
+        <span className={styles.label}>Résumer</span>
+      </div>
+      <div className={styles.section}>
+        {/* Metrics block */}
+        <div className={styles.metricsBlock}>
           {metrics.map(m => (
             <span key={m.id} className={styles.metricPill}>
               {getMetricLabel(m)}
-              <button
-                className={styles.pillRemove}
-                onClick={() => onRemoveMetric(m.id)}
-                aria-label="Supprimer la métrique"
-              >
+              <button className={styles.pillRemove} onClick={() => onRemoveMetric(m.id)}>
                 <IconX size={12} />
               </button>
             </span>
           ))}
-          <AddMetricButton onAdd={onAddMetric} />
-
-          {(hasMetrics || hasGroups) && (
-            <Text className={styles.byLabel}>par</Text>
+          {metrics.length > 0 ? (
+            <Popover opened={metricOpen} onClose={() => setMetricOpen(false)} position="bottom-start" withArrow shadow="md" trapFocus>
+              <Popover.Target>
+                <button className={styles.addBtn} onClick={() => setMetricOpen(o => !o)} title="Ajouter une métrique">
+                  <IconPlus size={14} />
+                </button>
+              </Popover.Target>
+              <Popover.Dropdown p={0}>
+                <MetricEditor onSave={m => { onAddMetric(m); setMetricOpen(false); }} onCancel={() => setMetricOpen(false)} />
+              </Popover.Dropdown>
+            </Popover>
+          ) : (
+            <Popover opened={metricOpen} onClose={() => setMetricOpen(false)} position="bottom-start" withArrow shadow="md" trapFocus>
+              <Popover.Target>
+                <button className={styles.emptyMetricBtn} onClick={() => setMetricOpen(o => !o)}>
+                  Choisissez une fonction ou une métrique
+                </button>
+              </Popover.Target>
+              <Popover.Dropdown p={0}>
+                <MetricEditor onSave={m => { onAddMetric(m); setMetricOpen(false); }} onCancel={() => setMetricOpen(false)} />
+              </Popover.Dropdown>
+            </Popover>
           )}
+        </div>
 
+        {/* "par" separator */}
+        <div className={styles.parLabel}>par</div>
+
+        {/* Groups block */}
+        <div className={styles.groupsBlock}>
           {groups.map(g => {
             const field = fields.find(f => f.id === g.fieldId);
             return (
               <span key={g.id} className={styles.groupPill}>
                 {field?.label ?? g.fieldId}
-                <button
-                  className={styles.pillRemove}
-                  onClick={() => onRemoveGroup(g.id)}
-                  aria-label="Supprimer le regroupement"
-                >
+                <button className={styles.pillRemove} onClick={() => onRemoveGroup(g.id)}>
                   <IconX size={12} />
                 </button>
               </span>
             );
           })}
-
-          <AddGroupButton onAdd={onAddGroup} existing={groups.map(g => g.fieldId)} />
+          {groups.length > 0 ? (
+            <Popover opened={groupOpen} onClose={() => setGroupOpen(false)} position="bottom-start" withArrow shadow="md" trapFocus>
+              <Popover.Target>
+                <button className={styles.addBtn} onClick={() => setGroupOpen(o => !o)} title="Ajouter un regroupement">
+                  <IconPlus size={14} />
+                </button>
+              </Popover.Target>
+              <Popover.Dropdown p={0}>
+                <GroupEditor onSave={g => { onAddGroup(g); setGroupOpen(false); }} onCancel={() => setGroupOpen(false)} existing={groups.map(g => g.fieldId)} />
+              </Popover.Dropdown>
+            </Popover>
+          ) : (
+            <Popover opened={groupOpen} onClose={() => setGroupOpen(false)} position="bottom-start" withArrow shadow="md" trapFocus>
+              <Popover.Target>
+                <button className={styles.emptyGroupBtn} onClick={() => setGroupOpen(o => !o)}>
+                  Choisissez une colonne pour regrouper par
+                </button>
+              </Popover.Target>
+              <Popover.Dropdown p={0}>
+                <GroupEditor onSave={g => { onAddGroup(g); setGroupOpen(false); }} onCancel={() => setGroupOpen(false)} existing={groups.map(g => g.fieldId)} />
+              </Popover.Dropdown>
+            </Popover>
+          )}
         </div>
       </div>
-      <button className={styles.previewBtn} title="Aperçu des données">
-        <IconChevronRight size={14} />
-      </button>
     </div>
   );
 }

@@ -1,42 +1,106 @@
-.section {
-  background: #f2fbf5;
-  border-radius: 8px;
-  padding: 16px 20px;
+.wrapper {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  min-height: 60px;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
 }
 
 .label {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #4d9e4d;
-  margin-bottom: 8px;
-  white-space: nowrap;
+  color: #4caf50;
 }
 
-.content {
-  flex: 1;
+.section {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: stretch;
+  gap: 0;
+  border-radius: 8px;
+  overflow: visible;
 }
 
-.row {
+/* Left block: metrics */
+.metricsBlock {
+  flex: 1;
+  background: #f0faf0;
+  border-radius: 8px 0 0 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+}
+
+/* "par" separator */
+.parLabel {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #696e7b;
+  background: #f0faf0;
+  flex-shrink: 0;
 }
 
-.byLabel {
+/* Right block: group-by */
+.groupsBlock {
+  flex: 1;
+  background: #f0faf0;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+}
+
+/* Empty state buttons */
+.emptyMetricBtn {
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #b5deb5;
+  border-radius: 6px;
+  padding: 7px 14px;
   font-size: 13px;
-  font-weight: 600;
-  color: #696e7b;
+  font-weight: 500;
+  color: #4caf50;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
   white-space: nowrap;
+}
+
+.emptyMetricBtn:hover {
+  background: #e8f5e8;
+  border-color: #4caf50;
+}
+
+.emptyGroupBtn {
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #b5deb5;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4caf50;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.emptyGroupBtn:hover {
+  background: #e8f5e8;
+  border-color: #4caf50;
 }
 
 /* Metric pills — green */
@@ -47,40 +111,38 @@
   background: #fff;
   border: 1px solid #b5deb5;
   border-radius: 6px;
-  padding: 5px 10px;
+  padding: 6px 10px;
   font-size: 13px;
   font-weight: 500;
   color: #2e7d32;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s;
   user-select: none;
 }
 
 .metricPill:hover {
-  background: #e4f2e4;
-  border-color: #4d9e4d;
+  background: #e8f5e8;
 }
 
-/* Group-by pills — blue */
+/* Group-by pills — green (same family) */
 .groupPill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   background: #fff;
-  border: 1px solid #aad4f5;
+  border: 1px solid #b5deb5;
   border-radius: 6px;
-  padding: 5px 10px;
+  padding: 6px 10px;
   font-size: 13px;
   font-weight: 500;
-  color: #1565c0;
+  color: #2e7d32;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s;
   user-select: none;
 }
 
 .groupPill:hover {
-  background: #eef5ff;
-  border-color: #509ee3;
+  background: #e8f5e8;
 }
 
 .pillRemove {
@@ -100,63 +162,22 @@
   opacity: 1;
 }
 
-/* Add buttons */
-.addMetricBtn {
+/* Add button (circle +) */
+.addBtn {
   display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: none;
-  border: 1px dashed #b5deb5;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #4d9e4d;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.addMetricBtn:hover {
-  background: #e4f2e4;
-  border-color: #4d9e4d;
-}
-
-.addGroupBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: none;
-  border: 1px dashed #aad4f5;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #509ee3;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.addGroupBtn:hover {
-  background: #eef5ff;
-  border-color: #509ee3;
-}
-
-.previewBtn {
-  display: flex;
   align-items: center;
   justify-content: center;
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  background: none;
+  background: #fff;
   border: 1px solid #b5deb5;
-  color: #4d9e4d;
+  border-radius: 50%;
+  color: #4caf50;
   cursor: pointer;
   transition: background 0.15s;
   flex-shrink: 0;
-  align-self: center;
 }
 
-.previewBtn:hover {
-  background: #e4f2e4;
+.addBtn:hover {
+  background: #e8f5e8;
 }

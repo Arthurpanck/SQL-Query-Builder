@@ -2,76 +2,17 @@
   background: #fff;
   border: 1px solid #e8e8e8;
   border-radius: 10px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-  overflow: hidden;
-  max-width: 800px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 860px;
   width: 100%;
 }
 
 .sections {
   display: flex;
   flex-direction: column;
-  gap: 0;
-}
-
-.sectionRow {
-  display: flex;
-  align-items: stretch;
-  border-bottom: 1px solid #f0f0f0;
-  padding: 14px 20px;
-  gap: 12px;
-}
-
-.sectionRow:last-child {
-  border-bottom: none;
-}
-
-.connector {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0 20px;
-  gap: 2px;
-}
-
-.connectorDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #d9d9d9;
-}
-
-.connectorLine {
-  width: 2px;
-  flex: 1;
-  background: #e8e8e8;
-  min-height: 12px;
-}
-
-.bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px 12px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.visualizeBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #fff;
-  background: #509ee3;
-  border: none;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.visualizeBtn:hover {
-  background: #3b8dd4;
+  gap: 16px;
 }

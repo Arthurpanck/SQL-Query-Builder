@@ -1,5 +1,4 @@
 import { useReducer } from 'react';
-import { IconChartBar } from '@tabler/icons-react';
 import { queryReducer, initialState } from './engine/reducer';
 import { FilterCondition, Metric, GroupBy } from './engine/types';
 import { toSQL } from './engine/sql';
@@ -19,66 +18,49 @@ export function QueryNotebook() {
   function addFilter(condition: Omit<FilterCondition, 'id'>) {
     dispatch({ type: 'ADD_FILTER', filter: { ...condition, id: uid() } });
   }
-
   function updateFilter(id: string, updates: Partial<FilterCondition>) {
     dispatch({ type: 'UPDATE_FILTER', id, updates });
   }
-
   function removeFilter(id: string) {
     dispatch({ type: 'REMOVE_FILTER', id });
   }
-
   function addMetric(metric: Omit<Metric, 'id'>) {
     dispatch({ type: 'ADD_METRIC', metric: { ...metric, id: uid() } });
   }
-
   function removeMetric(id: string) {
     dispatch({ type: 'REMOVE_METRIC', id });
   }
-
   function addGroup(group: Omit<GroupBy, 'id'>) {
     dispatch({ type: 'ADD_GROUP', group: { ...group, id: uid() } });
   }
-
   function removeGroup(id: string) {
     dispatch({ type: 'REMOVE_GROUP', id });
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%', maxWidth: 800 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%', maxWidth: 860 }}>
       <div className={styles.wrapper}>
         <div className={styles.sections}>
-          <div className={styles.sectionRow}>
-            <FilterSection
-              filters={state.filters}
-              onAdd={addFilter}
-              onUpdate={updateFilter}
-              onRemove={removeFilter}
-            />
-          </div>
-          <div className={styles.sectionRow}>
-            <SummarizeSection
-              metrics={state.metrics}
-              groups={state.groups}
-              onAddMetric={addMetric}
-              onRemoveMetric={removeMetric}
-              onAddGroup={addGroup}
-              onRemoveGroup={removeGroup}
-            />
-          </div>
-        </div>
-        <div className={styles.bottom}>
-          <NotebookToolbar
-            hasFilters={state.filters.length > 0}
-            hasMetrics={state.metrics.length > 0}
+          <FilterSection
+            filters={state.filters}
+            onAdd={addFilter}
+            onUpdate={updateFilter}
+            onRemove={removeFilter}
           />
-          <button className={styles.visualizeBtn}>
-            <IconChartBar size={14} />
-            Visualiser
-          </button>
+          <SummarizeSection
+            metrics={state.metrics}
+            groups={state.groups}
+            onAddMetric={addMetric}
+            onRemoveMetric={removeMetric}
+            onAddGroup={addGroup}
+            onRemoveGroup={removeGroup}
+          />
         </div>
+        <NotebookToolbar
+          hasFilters={state.filters.length > 0}
+          hasMetrics={state.metrics.length > 0}
+        />
       </div>
-
       <SQLPreview sql={sql} />
     </div>
   );

@@ -3,8 +3,8 @@ import {
   IconSum,
   IconArrowsSort,
   IconRowInsertBottom,
-  IconColumns,
   IconArrowsJoin,
+  IconChartBar,
 } from '@tabler/icons-react';
 import styles from './NotebookToolbar.module.css';
 
@@ -13,42 +13,54 @@ interface Props {
   hasMetrics: boolean;
 }
 
-const TOOLS = [
-  { id: 'filter', label: 'Filtrer', Icon: IconFilter, activeClass: 'activeFilter' },
-  { id: 'summarize', label: 'Résumer', Icon: IconSum, activeClass: 'activeSummarize' },
-  { id: 'join', label: 'Jointure', Icon: IconArrowsJoin, activeClass: 'active' },
-  { id: 'sort', label: 'Trier', Icon: IconArrowsSort, activeClass: 'active' },
-  { id: 'limit', label: 'Limite', Icon: IconRowInsertBottom, activeClass: 'active' },
-  { id: 'custom', label: 'Colonne personnalisée', Icon: IconColumns, activeClass: 'active' },
-] as const;
-
 export function NotebookToolbar({ hasFilters, hasMetrics }: Props) {
-  function isActive(id: string) {
-    if (id === 'filter') return hasFilters;
-    if (id === 'summarize') return hasMetrics;
-    return false;
-  }
-
-  function getClassName(id: string, activeClass: string) {
-    if (!isActive(id)) return styles.toolBtn;
-    return `${styles.toolBtn} ${styles[activeClass as keyof typeof styles]}`;
-  }
+  const tools = [
+    {
+      id: 'filter',
+      label: 'Filtre',
+      Icon: IconFilter,
+      colorClass: hasFilters ? styles.filter : styles.inactive,
+    },
+    {
+      id: 'summarize',
+      label: 'Résumer',
+      Icon: IconSum,
+      colorClass: hasMetrics ? styles.summarize : styles.inactive,
+    },
+    {
+      id: 'join',
+      label: 'Joindre des données',
+      Icon: IconArrowsJoin,
+      colorClass: styles.inactive,
+    },
+    {
+      id: 'sort',
+      label: 'Trier',
+      Icon: IconArrowsSort,
+      colorClass: styles.inactive,
+    },
+    {
+      id: 'limit',
+      label: 'Limite de lignes',
+      Icon: IconRowInsertBottom,
+      colorClass: styles.inactive,
+    },
+  ];
 
   return (
     <div className={styles.toolbar}>
-      {TOOLS.map((tool, i) => (
-        <>
-          {i === 2 && <div key={`divider-${i}`} className={styles.divider} />}
-          <button
-            key={tool.id}
-            className={getClassName(tool.id, tool.activeClass)}
-            title={tool.label}
-          >
-            <tool.Icon size={14} />
+      <div className={styles.cards}>
+        {tools.map(tool => (
+          <button key={tool.id} className={`${styles.card} ${tool.colorClass}`}>
+            <tool.Icon size={20} stroke={1.8} />
             {tool.label}
           </button>
-        </>
-      ))}
+        ))}
+      </div>
+      <button className={styles.visualizeBtn}>
+        <IconChartBar size={16} />
+        Visualiser
+      </button>
     </div>
   );
 }
