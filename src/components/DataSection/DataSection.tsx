@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { IconChevronDown, IconChevronRight, IconLayoutGrid, IconArrowsJoin } from '@tabler/icons-react';
+import { Checkbox } from '@mantine/core';
 import { useConfig } from '../../config/ConfigContext';
 import styles from './DataSection.module.css';
 
 interface Props {
-  onColumnClick?: (fieldId: string) => void;
+  selectedColumns: string[];
+  onColumnToggle: (fieldId: string) => void;
+  onSelectAll: () => void;
 }
 
 function getFieldTypeIcon(type: string): string {
@@ -17,7 +20,7 @@ function getFieldTypeIcon(type: string): string {
   }
 }
 
-export function DataSection({ onColumnClick }: Props) {
+export function DataSection({ selectedColumns, onColumnToggle, onSelectAll }: Props) {
   const { config } = useConfig();
   const [pillOpen, setPillOpen] = useState(false);
   const pillRef = useRef<HTMLDivElement>(null);
@@ -31,6 +34,8 @@ export function DataSection({ onColumnClick }: Props) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [pillOpen, handleClickOutside]);
 
+  const allSelected = selectedColumns.length === config.fields.length;
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.labelRow}>
@@ -39,14 +44,13 @@ export function DataSection({ onColumnClick }: Props) {
       <div className={styles.sectionOuter}>
         <div className={styles.section}>
           <div className={styles.dropdownAnchor} ref={pillRef}>
-            {/* Pill: table icon + name + divider + chevron */}
             <div className={styles.tablePill}>
               <span className={styles.pillLeft} onClick={() => setPillOpen(o => !o)}>
                 <IconLayoutGrid size={14} />
                 <span className={styles.pillName}>{config.tableName}</span>
               </span>
               <span className={styles.pillDivider} />
-              <button className={styles.pillChevronBtn} onClick={() => setPillOpen(o => !o)} title="Voir les colonnes">
+              <button className={styles.pillChevronBtn} onClick={() => setPillOpen(o => !o)} title="Choisir des colonnes">
                 <IconChevronDown size={14} />
               </button>
             </div>
@@ -54,23 +58,34 @@ export function DataSection({ onColumnClick }: Props) {
             {pillOpen && (
               <div className={styles.pillDropdown}>
                 <div className={styles.pillDropdownHeader}>
-                  <IconLayoutGrid size={13} color="#509ee3" />
-                  <span>{config.tableName}</span>
-                  <span className={styles.colCount}>{config.fields.length} colonnes</span>
+                  Choisir des colonnes
                 </div>
                 <div className={styles.pillDropdownDivider} />
                 <div className={styles.columnList}>
+                  {/* Select all */}
+                  <div className={styles.columnItem} onClick={onSelectAll}>
+                    <Checkbox
+                      checked={allSelected}
+                      onChange={onSelectAll}
+                      color="blue"
+                      size="sm"
+                      onClick={e => e.stopPropagation()}
+                    />
+                    <span className={styles.colLabel} style={{ fontWeight: 700 }}>Tout sélectionner</span>
+                  </div>
+                  <div className={styles.pillDropdownDivider} />
                   {config.fields.map(f => (
-                    <button
-                      key={f.id}
-                      className={styles.columnItem}
-                      onClick={() => { onColumnClick?.(f.id); setPillOpen(false); }}
-                      title="Filtrer par cette colonne"
-                    >
+                    <div key={f.id} className={styles.columnItem} onClick={() => onColumnToggle(f.id)}>
+                      <Checkbox
+                        checked={selectedColumns.includes(f.id)}
+                        onChange={() => onColumnToggle(f.id)}
+                        color="blue"
+                        size="sm"
+                        onClick={e => e.stopPropagation()}
+                      />
                       <span className={styles.colTypeIcon}>{getFieldTypeIcon(f.type)}</span>
                       <span className={styles.colLabel}>{f.label}</span>
-                      <span className={styles.colHint}>Filtrer →</span>
-                    </button>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -82,7 +97,6 @@ export function DataSection({ onColumnClick }: Props) {
         </button>
       </div>
 
-      {/* Joindre les données — inactive */}
       <div className={styles.joinRow}>
         <button className={styles.joinBtn} disabled title="Non disponible dans cette version">
           <IconArrowsJoin size={14} />

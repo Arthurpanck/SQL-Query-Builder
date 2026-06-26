@@ -1,4 +1,5 @@
-import { IconFilter, IconSum, IconArrowsSort, IconRowInsertBottom } from '@tabler/icons-react';
+import { IconFilter, IconSum, IconArrowsSort } from '@tabler/icons-react';
+import { IconList } from '../ui/IconList';
 import styles from './NotebookToolbar.module.css';
 
 interface Props {
@@ -36,12 +37,11 @@ export function NotebookToolbar({ showFilter, showSummarize, showSort, showLimit
           )}
           {!showLimit && (
             <button className={`${styles.miniBtn} ${styles.neutralBtn}`} onClick={onToggleLimit}>
-              <IconRowInsertBottom size={14} stroke={1.8} />Limite de lignes
+              <IconList size={14} />Limite de lignes
             </button>
           )}
         </div>
       )}
-      {/* Visualiser — no icon, just text like Metabase */}
       <button className={styles.visualizeBtn}>Visualiser</button>
     </div>
   );

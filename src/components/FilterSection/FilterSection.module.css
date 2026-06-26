@@ -1,4 +1,5 @@
-/* Filter colors: label #7172AD, section bg #f1f1fc, accent border #d4d4f6 */
+/* Filter: --mb-color-filter = hsl(240,65%,69%) = #7172AD */
+/* Section bg = rgba(113,114,173, 0.1) */
 .wrapper { display: flex; flex-direction: column; gap: 6px; }
 
 .labelRow { display: flex; align-items: center; justify-content: space-between; padding: 0 2px; }
@@ -6,31 +7,40 @@
 
 .closeBtn {
   display: flex; align-items: center; justify-content: center;
-  background: none; border: none; color: #d4d4f6; cursor: pointer;
+  background: none; border: none; color: rgba(113,114,173,0.5); cursor: pointer;
   padding: 2px; border-radius: 4px; transition: color 0.15s; line-height: 1;
 }
 .closeBtn:hover { color: #7172ad; }
 
 .sectionOuter { display: flex; align-items: center; gap: 6px; }
 
-/* Filter section bg: #f1f1fc */
+/* Exact Metabase section bg: filter color at 10% opacity */
 .section {
-  flex: 1; background: #f1f1fc; border-radius: 8px;
+  flex: 1;
+  background: rgba(113, 114, 173, 0.1);
+  border-radius: 8px;
   padding: 14px 18px; min-height: 58px;
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
   overflow: visible; position: relative;
 }
 
-/* Empty button: transparent bg, border #d4d4f6, text #7172ad */
+/* Empty button: transparent bg, colored border, BOLD text */
 .emptyBtn {
   display: inline-flex; align-items: center;
-  background: transparent; border: 1px solid #d4d4f6; border-radius: 6px;
-  padding: 8px 16px; font-size: 14px; font-weight: 400; color: #7172ad;
-  cursor: pointer; transition: background 0.12s;
+  background: transparent;
+  border: 1px solid #7172ad;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px; font-weight: 700; color: #7172ad;
+  cursor: pointer; transition: border-width 0.08s, box-shadow 0.08s;
 }
-.emptyBtn:hover { background: rgba(113,114,173,0.06); }
+/* Hover: surlignance du contour (thicker border via box-shadow) */
+.emptyBtn:hover {
+  box-shadow: 0 0 0 1px #7172ad;
+  border-color: #7172ad;
+}
 
-/* Filter pills: bg #7172ad, white bold text (Metabase style) */
+/* Pills: purple bg, white bold */
 .pill {
   display: inline-flex; align-items: center; gap: 6px;
   background: #7172ad; border: none; border-radius: 6px;
@@ -46,16 +56,15 @@
 }
 .pillRemove:hover { opacity: 1; }
 
-/* Small + button */
 .addBtn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 28px; height: 28px;
-  background: rgba(113,114,173,0.1); border: 1px solid #d4d4f6;
+  background: rgba(113,114,173,0.1); border: 1px solid #7172ad;
   border-radius: 50%; color: #7172ad;
   cursor: pointer; font-size: 18px; font-weight: 300; line-height: 1;
-  transition: background 0.12s; flex-shrink: 0;
+  transition: box-shadow 0.08s; flex-shrink: 0;
 }
-.addBtn:hover { background: rgba(113,114,173,0.2); }
+.addBtn:hover { box-shadow: 0 0 0 1px #7172ad; }
 
 .arrowBtn {
   display: flex; align-items: center; justify-content: center;
@@ -74,7 +83,6 @@
   min-width: 340px; border: 1px solid #ebebeb; overflow: hidden;
 }
 
-/* Step 1: field list */
 .fieldListPanel { display: flex; flex-direction: column; max-height: 380px; }
 
 .searchBox {
@@ -100,11 +108,11 @@
 
 .fieldTypeIcon {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 22px; height: 22px; background: #f1f1fc; border-radius: 4px;
+  width: 22px; height: 22px;
+  background: rgba(113,114,173,0.12); border-radius: 4px;
   font-size: 11px; font-weight: 700; color: #7172ad; flex-shrink: 0;
 }
 
-/* Step 2: value panel */
 .valuePanel { display: flex; flex-direction: column; }
 
 .valuePanelHeader {
@@ -124,7 +132,7 @@
 
 .operatorSelect {
   border: 1px solid #e0e0e0; border-radius: 6px;
-  padding: 5px 10px; font-size: 13px; font-weight: 400;
+  padding: 5px 10px; font-size: 13px;
   color: #2e353b; background: #fff; cursor: pointer; outline: none;
 }
 
@@ -142,7 +150,7 @@
 
 .textValueInput {
   width: 100%; border: 1px solid #e0e0e0; border-radius: 6px;
-  padding: 9px 12px; font-size: 14px; font-weight: 400; color: #2e353b;
+  padding: 9px 12px; font-size: 14px; color: #2e353b;
   outline: none; box-sizing: border-box;
 }
 .textValueInput:focus { border-color: #7172ad; box-shadow: 0 0 0 2px rgba(113,114,173,0.12); }

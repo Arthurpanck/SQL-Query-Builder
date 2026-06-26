@@ -1,4 +1,5 @@
-/* Résumer colors: label #689735, bg #eff4ea, pills #689735 */
+/* Summarize: --mb-color-summarize = hsl(89,48%,40%) = rgb(104,151,53) = #689735 */
+/* Section bg = rgba(104,151,53, 0.1) */
 .wrapper { display: flex; flex-direction: column; gap: 6px; }
 
 .labelRow { display: flex; align-items: center; justify-content: space-between; padding: 0 2px; }
@@ -6,45 +7,65 @@
 
 .closeBtn {
   display: flex; align-items: center; justify-content: center;
-  background: none; border: none; color: #bdd49a; cursor: pointer;
+  background: none; border: none; color: rgba(104,151,53,0.5); cursor: pointer;
   padding: 2px; border-radius: 4px; transition: color 0.15s; line-height: 1;
 }
 .closeBtn:hover { color: #689735; }
 
 .sectionOuter { display: flex; align-items: center; gap: 6px; }
 
-.section { flex: 1; display: flex; align-items: stretch; overflow: visible; }
+/* Two separate green blocks with white gap+par between them */
+.section {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow: visible;
+}
 
-/* Left metrics block bg: #eff4ea */
+/* Left metrics block */
 .metricsBlock {
-  flex: 1; background: #eff4ea; border-radius: 8px 0 0 8px;
-  padding: 14px 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  flex: 1;
+  background: rgba(104, 151, 53, 0.1);
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
   min-height: 58px; position: relative;
 }
 
+/* "par" sits on white page background — transparent, green bold */
 .parLabel {
-  display: flex; align-items: center; padding: 0 14px;
-  font-size: 14px; font-weight: 400; color: #696e7b;
-  background: #eff4ea; flex-shrink: 0; white-space: nowrap;
+  display: flex; align-items: center;
+  padding: 0 16px;
+  font-size: 14px; font-weight: 700; color: #689735;
+  background: transparent;
+  flex-shrink: 0; white-space: nowrap;
 }
 
-/* Right groups block bg: #eff4ea */
+/* Right groups block */
 .groupsBlock {
-  flex: 1; background: #eff4ea; border-radius: 0 8px 8px 0;
-  padding: 14px 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  flex: 1;
+  background: rgba(104, 151, 53, 0.1);
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
   min-height: 58px; position: relative;
 }
 
-/* Empty buttons: transparent, border #689735 */
+/* Empty buttons: bold, colored border, hover = contour surlignance */
 .emptyMetricBtn, .emptyGroupBtn {
   display: inline-flex; align-items: center;
-  background: transparent; border: 1px solid #689735; border-radius: 6px;
-  padding: 8px 16px; font-size: 14px; font-weight: 400; color: #689735;
-  cursor: pointer; transition: background 0.12s;
+  background: transparent;
+  border: 1px solid #689735;
+  border-radius: 6px; padding: 8px 16px;
+  font-size: 14px; font-weight: 700; color: #689735;
+  cursor: pointer; transition: box-shadow 0.08s;
 }
-.emptyMetricBtn:hover, .emptyGroupBtn:hover { background: rgba(104,151,53,0.08); }
+.emptyMetricBtn:hover, .emptyGroupBtn:hover {
+  box-shadow: 0 0 0 1px #689735;
+}
 
-/* Pills: bg #689735, white bold text */
+/* Pills: bg green, white bold */
 .metricPill, .groupPill {
   display: inline-flex; align-items: center; gap: 6px;
   background: #689735; border: none; border-radius: 6px;
@@ -66,9 +87,9 @@
   background: rgba(104,151,53,0.1); border: 1px solid #689735;
   border-radius: 50%; color: #689735;
   cursor: pointer; font-size: 18px; font-weight: 300; line-height: 1;
-  transition: background 0.12s; flex-shrink: 0;
+  transition: box-shadow 0.08s; flex-shrink: 0;
 }
-.addBtn:hover { background: rgba(104,151,53,0.22); }
+.addBtn:hover { box-shadow: 0 0 0 1px #689735; }
 
 .arrowBtn {
   display: flex; align-items: center; justify-content: center;
@@ -77,7 +98,6 @@
 }
 .arrowBtn:hover { color: #000; }
 
-/* Dropdown */
 .dropdownAnchor { position: relative; }
 
 .dropdown {
@@ -98,8 +118,7 @@
 
 .cancelBtn {
   padding: 8px 16px; border-radius: 6px; border: none;
-  background: #f0f0f0; color: #696e7b; font-size: 13px; font-weight: 600;
-  cursor: pointer;
+  background: #f0f0f0; color: #696e7b; font-size: 13px; font-weight: 600; cursor: pointer;
 }
 .cancelBtn:hover { background: #e5e5e5; }
 

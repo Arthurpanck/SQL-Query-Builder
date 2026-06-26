@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react';
+import { useReducer, useState, useEffect } from 'react';
 import { queryReducer, initialState } from './engine/reducer';
 import { FilterCondition, Metric, GroupBy, SortItem } from './engine/types';
 import { toSQL } from './engine/sql';
@@ -26,7 +26,32 @@ export function QueryNotebook() {
   const [showSort, setShowSort] = useState(false);
   const [showLimit, setShowLimit] = useState(false);
 
-  const sql = toSQL(state, config.fields, config.tableName);
+  // Column selection (all selected by default)
+  const [selectedColumns, setSelectedColumns] = useState<string[]>(config.fields.map(f => f.id));
+
+  // Re-initialize when config changes
+  useEffect(() => {
+    setSelectedColumns(config.fields.map(f => f.id));
+  }, [config]);
+
+  const handleColumnToggle = (fieldId: string) => {
+    setSelectedColumns(prev =>
+      prev.includes(fieldId)
+        ? prev.filter(id => id !== fieldId)
+        : [...prev, fieldId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedColumns.length === config.fields.length) {
+      // Deselect all (keep at least one selected)
+      setSelectedColumns([config.fields[0]?.id].filter(Boolean));
+    } else {
+      setSelectedColumns(config.fields.map(f => f.id));
+    }
+  };
+
+  const sql = toSQL(state, config.fields, config.tableName, selectedColumns);
 
   // Filter
   const addFilter = (c: Omit<FilterCondition, 'id'>) => dispatch({ type: 'ADD_FILTER', filter: { ...c, id: uid() } });
@@ -58,18 +83,18 @@ export function QueryNotebook() {
   const setLimit = (limit: number | null) => dispatch({ type: 'SET_LIMIT', limit });
   const hideLimit = () => { dispatch({ type: 'SET_LIMIT', limit: null }); setShowLimit(false); };
 
-  // Prefill filter from DataSection column click
+  // Prefill filter from DataSection column (old feature - now DataSection does column selection instead)
   const [prefilledFieldId, setPrefilledFieldId] = useState<string | null>(null);
-  const handleColumnClick = (fieldId: string) => {
-    setShowFilter(true);
-    setPrefilledFieldId(fieldId);
-  };
 
   return (
     <div className={styles.notebook}>
       <ConfigUpload />
       <div className={styles.sections}>
-        <DataSection onColumnClick={handleColumnClick} />
+        <DataSection
+          selectedColumns={selectedColumns}
+          onColumnToggle={handleColumnToggle}
+          onSelectAll={handleSelectAll}
+        />
 
         {showFilter && (
           <FilterSection

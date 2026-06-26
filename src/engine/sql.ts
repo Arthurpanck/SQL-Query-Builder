@@ -27,9 +27,7 @@ function serializeFilter(f: FilterCondition, fields: Field[]): string {
   const c = col(field);
   if (f.operator === 'is_null') return `${c} IS NULL`;
   if (f.operator === 'is_not_null') return `${c} IS NOT NULL`;
-  if (f.operator === 'between') {
-    return `${c} BETWEEN ${serializeValue(f.value, field.type)} AND ${serializeValue(f.value2 ?? null, field.type)}`;
-  }
+  if (f.operator === 'between') return `${c} BETWEEN ${serializeValue(f.value, field.type)} AND ${serializeValue(f.value2 ?? null, field.type)}`;
   if (f.operator === 'contains') return `${c} LIKE '%${f.value}%'`;
   if (f.operator === 'not_contains') return `${c} NOT LIKE '%${f.value}%'`;
   if (f.operator === 'starts_with') return `${c} LIKE '${f.value}%'`;
@@ -45,20 +43,36 @@ function serializeMetric(m: Metric, fields: Field[]): string {
   return `${m.aggregation.toUpperCase()}(${col(field)})`;
 }
 
-export function toSQL(state: QueryState, fields: Field[], tableName = 'table'): string {
+export function toSQL(
+  state: QueryState,
+  fields: Field[],
+  tableName = 'table',
+  selectedColumns?: string[]
+): string {
   const { filters, metrics, groups, sorts, limit } = state;
 
   const selectParts: string[] = [];
-  if (groups.length > 0) {
-    groups.forEach(g => {
-      const f = fields.find(x => x.id === g.fieldId);
+
+  if (metrics.length > 0 || groups.length > 0) {
+    // Summarize mode: group by + metrics
+    if (groups.length > 0) {
+      groups.forEach(g => {
+        const f = fields.find(x => x.id === g.fieldId);
+        if (f) selectParts.push(col(f));
+      });
+    }
+    if (metrics.length > 0) {
+      metrics.forEach(m => selectParts.push(serializeMetric(m, fields)));
+    }
+  } else if (selectedColumns && selectedColumns.length < fields.length && selectedColumns.length > 0) {
+    // Column picker: only selected columns
+    selectedColumns.forEach(id => {
+      const f = fields.find(x => x.id === id);
       if (f) selectParts.push(col(f));
     });
+  } else {
+    selectParts.push('*');
   }
-  if (metrics.length > 0) {
-    metrics.forEach(m => selectParts.push(serializeMetric(m, fields)));
-  }
-  if (selectParts.length === 0) selectParts.push('*');
 
   const lines: string[] = [
     `SELECT ${selectParts.join(', ')}`,
@@ -76,7 +90,10 @@ export function toSQL(state: QueryState, fields: Field[], tableName = 'table'): 
   }
 
   if (groups.length > 0) {
-    const groupCols = groups.map(g => { const f = fields.find(x => x.id === g.fieldId); return f ? col(f) : g.fieldId; });
+    const groupCols = groups.map(g => {
+      const f = fields.find(x => x.id === g.fieldId);
+      return f ? col(f) : g.fieldId;
+    });
     lines.push(`GROUP BY ${groupCols.join(', ')}`);
   }
 
@@ -88,9 +105,7 @@ export function toSQL(state: QueryState, fields: Field[], tableName = 'table'): 
     if (sortCols.length > 0) lines.push(`ORDER BY ${sortCols.join(', ')}`);
   }
 
-  if (limit !== null) {
-    lines.push(`LIMIT ${limit}`);
-  }
+  if (limit !== null) lines.push(`LIMIT ${limit}`);
 
   return lines.join('\n');
 }
