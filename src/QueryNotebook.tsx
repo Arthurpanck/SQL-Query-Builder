@@ -40,6 +40,7 @@ export function QueryNotebook() {
             onAdd={addFilter}
             onUpdate={updateFilter}
             onRemove={removeFilter}
+            onClear={() => state.filters.forEach(f => removeFilter(f.id))}
           />
           <SummarizeSection
             metrics={state.metrics}
@@ -48,6 +49,10 @@ export function QueryNotebook() {
             onRemoveMetric={removeMetric}
             onAddGroup={addGroup}
             onRemoveGroup={removeGroup}
+            onClear={() => {
+              state.metrics.forEach(m => removeMetric(m.id));
+              state.groups.forEach(g => removeGroup(g.id));
+            }}
           />
         </div>
         <NotebookToolbar

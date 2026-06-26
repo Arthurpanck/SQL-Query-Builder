@@ -12,6 +12,7 @@ interface Props {
   onRemoveMetric: (id: string) => void;
   onAddGroup: (group: Omit<GroupBy, 'id'>) => void;
   onRemoveGroup: (id: string) => void;
+  onClear: () => void;
 }
 
 function getMetricLabel(m: Metric): string {
@@ -91,7 +92,7 @@ function GroupEditor({ onSave, onCancel, existing }: {
   );
 }
 
-export function SummarizeSection({ metrics, groups, onAddMetric, onRemoveMetric, onAddGroup, onRemoveGroup }: Props) {
+export function SummarizeSection({ metrics, groups, onAddMetric, onRemoveMetric, onAddGroup, onRemoveGroup, onClear }: Props) {
   const [metricOpen, setMetricOpen] = useState(false);
   const [groupOpen, setGroupOpen] = useState(false);
 
@@ -99,6 +100,9 @@ export function SummarizeSection({ metrics, groups, onAddMetric, onRemoveMetric,
     <div className={styles.wrapper}>
       <div className={styles.labelRow}>
         <span className={styles.label}>Résumer</span>
+        <button className={styles.closeBtn} onClick={onClear} title="Supprimer le résumé">
+          <IconX size={14} />
+        </button>
       </div>
       <div className={styles.section}>
         {/* Metrics block */}

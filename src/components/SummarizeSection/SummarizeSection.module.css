@@ -7,12 +7,31 @@
 .labelRow {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 2px;
 }
 
 .label {
   font-size: 14px;
   font-weight: 700;
+  color: #4caf50;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #b8c8b8;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color 0.15s;
+  line-height: 1;
+}
+
+.closeBtn:hover {
   color: #4caf50;
 }
 

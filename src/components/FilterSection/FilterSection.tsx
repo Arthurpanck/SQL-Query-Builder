@@ -11,6 +11,7 @@ interface Props {
   onAdd: (condition: Omit<FilterCondition, 'id'>) => void;
   onUpdate: (id: string, updates: Partial<FilterCondition>) => void;
   onRemove: (id: string) => void;
+  onClear: () => void;
 }
 
 function getPillLabel(filter: FilterCondition): string {
@@ -77,11 +78,14 @@ function AddFilterButton({ onAdd, hasFilters }: { onAdd: Props['onAdd']; hasFilt
   );
 }
 
-export function FilterSection({ filters, onAdd, onUpdate, onRemove }: Props) {
+export function FilterSection({ filters, onAdd, onUpdate, onRemove, onClear }: Props) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.labelRow}>
         <span className={styles.label}>Filtre</span>
+        <button className={styles.closeBtn} onClick={onClear} title="Supprimer les filtres">
+          <IconX size={14} />
+        </button>
       </div>
       <div className={styles.section}>
         {filters.map(f => (
