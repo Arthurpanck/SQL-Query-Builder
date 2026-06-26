@@ -15,30 +15,24 @@ export function QueryNotebook() {
   const [state, dispatch] = useReducer(queryReducer, initialState);
   const sql = toSQL(state);
 
-  function addFilter(condition: Omit<FilterCondition, 'id'>) {
-    dispatch({ type: 'ADD_FILTER', filter: { ...condition, id: uid() } });
+  function addFilter(c: Omit<FilterCondition, 'id'>) {
+    dispatch({ type: 'ADD_FILTER', filter: { ...c, id: uid() } });
   }
   function updateFilter(id: string, updates: Partial<FilterCondition>) {
     dispatch({ type: 'UPDATE_FILTER', id, updates });
   }
-  function removeFilter(id: string) {
-    dispatch({ type: 'REMOVE_FILTER', id });
+  function removeFilter(id: string) { dispatch({ type: 'REMOVE_FILTER', id }); }
+  function addMetric(m: Omit<Metric, 'id'>) {
+    dispatch({ type: 'ADD_METRIC', metric: { ...m, id: uid() } });
   }
-  function addMetric(metric: Omit<Metric, 'id'>) {
-    dispatch({ type: 'ADD_METRIC', metric: { ...metric, id: uid() } });
+  function removeMetric(id: string) { dispatch({ type: 'REMOVE_METRIC', id }); }
+  function addGroup(g: Omit<GroupBy, 'id'>) {
+    dispatch({ type: 'ADD_GROUP', group: { ...g, id: uid() } });
   }
-  function removeMetric(id: string) {
-    dispatch({ type: 'REMOVE_METRIC', id });
-  }
-  function addGroup(group: Omit<GroupBy, 'id'>) {
-    dispatch({ type: 'ADD_GROUP', group: { ...group, id: uid() } });
-  }
-  function removeGroup(id: string) {
-    dispatch({ type: 'REMOVE_GROUP', id });
-  }
+  function removeGroup(id: string) { dispatch({ type: 'REMOVE_GROUP', id }); }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%', maxWidth: 860 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, width: '100%', maxWidth: 860 }}>
       <div className={styles.wrapper}>
         <div className={styles.sections}>
           <FilterSection

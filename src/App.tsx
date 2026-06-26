@@ -6,9 +6,9 @@ export default function App() {
       minHeight: '100vh',
       background: '#fff',
       display: 'flex',
-      alignItems: 'flex-start',
-      justifyContent: 'center',
-      padding: '32px 24px',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '32px 32px',
     }}>
       <QueryNotebook />
     </div>
