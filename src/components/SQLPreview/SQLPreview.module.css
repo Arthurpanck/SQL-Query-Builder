@@ -1,0 +1,57 @@
+.container {
+  background: #1e1e2e;
+  border-radius: 8px;
+  padding: 16px 20px;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6e7280;
+}
+
+.copyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #6e7280;
+  background: none;
+  border: 1px solid #3a3a52;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.copyBtn:hover {
+  background: #3a3a52;
+  color: #cdd6f4;
+}
+
+.code {
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #cdd6f4;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 0;
+}
+
+/* SQL syntax highlighting */
+.kw { color: #cba6f7; }    /* keywords: SELECT, FROM, WHERE, AND, GROUP BY */
+.field { color: #89dceb; } /* field names */
+.val { color: #a6e3a1; }   /* values */
+.op { color: #fab387; }    /* operators */
