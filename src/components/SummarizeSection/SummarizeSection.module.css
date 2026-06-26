@@ -44,36 +44,36 @@
 
 .metricsBlock {
   flex: 1;
-  background: #eef6e0;
-  padding: 12px 16px;
+  background: #f2f8e8;
+  padding: 14px 18px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  min-height: 52px;
+  min-height: 58px;
 }
 
 .parLabel {
   display: flex;
   align-items: center;
-  padding: 0 10px;
-  font-size: 13px;
-  font-weight: 700;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 400;
   color: #696e7b;
-  background: #eef6e0;
+  background: #f2f8e8;
   flex-shrink: 0;
   white-space: nowrap;
 }
 
 .groupsBlock {
   flex: 1;
-  background: #eef6e0;
-  padding: 12px 16px;
+  background: #f2f8e8;
+  padding: 14px 18px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  min-height: 52px;
+  min-height: 58px;
 }
 
 .emptyMetricBtn, .emptyGroupBtn {
@@ -82,9 +82,9 @@
   background: #fff;
   border: 1px solid #b8d98b;
   border-radius: 6px;
-  padding: 7px 14px;
-  font-size: 13px;
-  font-weight: 500;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 400;
   color: #84bb4c;
   cursor: pointer;
   transition: background 0.15s;
@@ -153,50 +153,53 @@
   left: 0;
   z-index: 9999;
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  min-width: 280px;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+  min-width: 340px;
   overflow: hidden;
+  border: 1px solid #ebebeb;
 }
 
 .editorInner {
   display: flex;
   flex-direction: column;
   padding: 16px;
-  gap: 12px;
-  min-width: 260px;
+  gap: 14px;
+  min-width: 320px;
 }
 
 .editorLabel {
   font-size: 12px;
   font-weight: 600;
-  color: #696e7b;
+  color: #949599;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 2px;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
 }
 
 .editorSelect {
   width: 100%;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
-  padding: 7px 10px;
-  font-size: 13px;
+  padding: 9px 12px;
+  font-size: 14px;
+  font-weight: 400;
   color: #2e353b;
   outline: none;
   background: #fff;
+  cursor: pointer;
 }
-.editorSelect:focus { border-color: #84bb4c; }
+.editorSelect:focus { border-color: #84bb4c; box-shadow: 0 0 0 2px rgba(132,187,76,0.15); }
 
 .editorActions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .cancelBtn {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 6px;
   border: none;
   background: #f0f0f0;
@@ -207,7 +210,7 @@
 .cancelBtn:hover { background: #e5e5e5; }
 
 .saveBtn {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 6px;
   border: none;
   background: #84bb4c;

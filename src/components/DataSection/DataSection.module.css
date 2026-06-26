@@ -1,14 +1,10 @@
-﻿/* Metabase: données color #509EE3 */
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .labelRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 0 2px;
 }
 
@@ -25,7 +21,7 @@
 
 .section {
   flex: 1;
-  background: #eaf3fc;
+  background: #dce9f7;
   border-radius: 8px;
   padding: 12px 16px;
   min-height: 56px;
@@ -34,68 +30,120 @@
   gap: 12px;
 }
 
+.dropdownAnchor {
+  position: relative;
+}
+
 .tablePill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 0;
   background: #509ee3;
   border-radius: 6px;
-  padding: 6px 12px;
   font-size: 14px;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
-  transition: filter 0.15s;
-  user-select: none;
   border: none;
+  overflow: hidden;
+  user-select: none;
 }
-.tablePill:hover { filter: brightness(1.1); }
 
 .pillIcon {
   display: flex;
   align-items: center;
-  opacity: 0.85;
+  padding: 7px 10px 7px 12px;
+  gap: 6px;
+}
+
+.pillDivider {
+  width: 1px;
+  background: rgba(255,255,255,0.3);
+  height: 32px;
 }
 
 .pillChevron {
   display: flex;
   align-items: center;
-  opacity: 0.85;
+  padding: 7px 10px;
+  background: rgba(255,255,255,0.12);
+  transition: background 0.12s;
 }
 
-.iconButtons {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 6px;
+.tablePill:hover .pillChevron {
+  background: rgba(255,255,255,0.22);
 }
 
-.iconBtn {
+.pillDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 9999;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  min-width: 260px;
+  overflow: hidden;
+}
+
+.pillDropdownItem {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: #f5f6f8;
-  border: none;
-  border-radius: 6px;
-  color: #949599;
+  gap: 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #2e353b;
   cursor: pointer;
-  transition: background 0.15s;
 }
-.iconBtn:hover { background: #e9eaec; color: #555; }
+
+.pillDropdownItem:hover {
+  background: #f4f9ff;
+}
+
+.pillDropdownDivider {
+  height: 1px;
+  background: #f0f0f0;
+}
+
+.pillDropdownHint {
+  padding: 10px 16px;
+  font-size: 12px;
+  color: #949599;
+  line-height: 1.5;
+}
 
 .arrowBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
+  width: 28px;
   height: 56px;
   background: none;
   border: none;
   cursor: pointer;
-  color: #333;
+  color: #555;
   flex-shrink: 0;
   padding: 0 4px;
+  transition: color 0.12s;
 }
 .arrowBtn:hover { color: #000; }
+
+/* Join row — inactive button below Données */
+.joinRow {
+  padding-left: 2px;
+}
+
+.joinBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b0b4bb;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

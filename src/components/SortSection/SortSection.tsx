@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import { Popover, Select, Stack, Button, Group } from '@mantine/core';
-import { IconPlus, IconX, IconArrowUp, IconArrowDown } from '@tabler/icons-react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { IconX, IconArrowUp, IconArrowDown } from '@tabler/icons-react';
 import { SortItem, SortDirection } from '../../engine/types';
 import { useConfig } from '../../config/ConfigContext';
 import styles from './SortSection.module.css';
@@ -13,35 +12,59 @@ interface Props {
   onClear: () => void;
 }
 
+function useDropdown() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const handleClickOutside = useCallback((e: MouseEvent) => {
+    if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+  }, []);
+  useEffect(() => {
+    if (open) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [open, handleClickOutside]);
+  return { open, setOpen, ref };
+}
+
 function SortEditor({ onSave, onCancel, existing }: {
   onSave: (s: Omit<SortItem, 'id'>) => void;
   onCancel: () => void;
   existing: string[];
 }) {
   const { config } = useConfig();
-  const [fieldId, setFieldId] = useState<string | null>(null);
+  const [fieldId, setFieldId] = useState('');
   const [direction, setDirection] = useState<SortDirection>('ASC');
   const available = config.fields.filter(f => !existing.includes(f.id));
+  const canSave = fieldId !== '';
 
   return (
-    <Stack gap="sm" p="md" style={{ minWidth: 240 }}>
-      <Select label="Colonne" placeholder="Choisir…"
-        data={available.map(f => ({ value: f.id, label: f.label }))}
-        value={fieldId} onChange={setFieldId} searchable size="sm" />
-      <Select label="Ordre"
-        data={[{ value: 'ASC', label: 'Croissant (A → Z)' }, { value: 'DESC', label: 'Décroissant (Z → A)' }]}
-        value={direction} onChange={v => setDirection(v as SortDirection)} size="sm" />
-      <Group gap="xs" justify="flex-end">
-        <Button variant="subtle" size="xs" color="gray" onClick={onCancel}>Annuler</Button>
-        <Button size="xs" disabled={!fieldId} onClick={() => fieldId && onSave({ fieldId, direction })}>Ajouter</Button>
-      </Group>
-    </Stack>
+    <div className={styles.editorInner}>
+      <div>
+        <div className={styles.editorLabel}>Colonne</div>
+        <select className={styles.editorSelect} value={fieldId} onChange={e => setFieldId(e.target.value)}>
+          <option value="">Choisir une colonne…</option>
+          {available.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
+        </select>
+      </div>
+      <div>
+        <div className={styles.editorLabel}>Ordre</div>
+        <select className={styles.editorSelect} value={direction} onChange={e => setDirection(e.target.value as SortDirection)}>
+          <option value="ASC">Croissant (A → Z)</option>
+          <option value="DESC">Décroissant (Z → A)</option>
+        </select>
+      </div>
+      <div className={styles.editorActions}>
+        <button className={styles.cancelBtn} onClick={onCancel}>Annuler</button>
+        <button className={styles.saveBtn} disabled={!canSave} onClick={() => canSave && onSave({ fieldId, direction })}>
+          Ajouter
+        </button>
+      </div>
+    </div>
   );
 }
 
 export function SortSection({ sorts, onAdd, onUpdate, onRemove, onClear }: Props) {
   const { config } = useConfig();
-  const [open, setOpen] = useState(false);
+  const dropdown = useDropdown();
 
   function toggleDir(sort: SortItem) {
     onUpdate(sort.id, { direction: sort.direction === 'ASC' ? 'DESC' : 'ASC' });
@@ -51,7 +74,7 @@ export function SortSection({ sorts, onAdd, onUpdate, onRemove, onClear }: Props
     <div className={styles.wrapper}>
       <div className={styles.labelRow}>
         <span className={styles.label}>Trier</span>
-        <button className={styles.closeBtn} onClick={onClear}><IconX size={14} /></button>
+        <button className={styles.closeBtn} onClick={onClear} title="Supprimer le tri"><IconX size={14} /></button>
       </div>
       <div className={styles.section}>
         {sorts.map(s => {
@@ -60,33 +83,29 @@ export function SortSection({ sorts, onAdd, onUpdate, onRemove, onClear }: Props
             <span key={s.id} className={styles.pill}>
               {s.direction === 'ASC' ? <IconArrowUp size={13} /> : <IconArrowDown size={13} />}
               {field?.label ?? s.fieldId}
-              <button className={styles.dirBtn} onClick={() => toggleDir(s)}>
-                {s.direction}
-              </button>
+              <button className={styles.dirBtn} onClick={() => toggleDir(s)}>{s.direction}</button>
               <button className={styles.pillRemove} onClick={() => onRemove(s.id)}><IconX size={12} /></button>
             </span>
           );
         })}
-        <Popover opened={open} onClose={() => setOpen(false)} position="bottom-start" withArrow shadow="md" trapFocus>
-          <Popover.Target>
-            {sorts.length > 0 ? (
-              <button className={styles.addBtn} onClick={() => setOpen(o => !o)} title="Ajouter un tri">
-                <IconPlus size={14} />
-              </button>
-            ) : (
-              <button className={styles.emptyBtn} onClick={() => setOpen(o => !o)}>
-                Choisissez une colonne pour trier
-              </button>
-            )}
-          </Popover.Target>
-          <Popover.Dropdown p={0}>
-            <SortEditor
-              onSave={s => { onAdd(s); setOpen(false); }}
-              onCancel={() => setOpen(false)}
-              existing={sorts.map(s => s.fieldId)}
-            />
-          </Popover.Dropdown>
-        </Popover>
+        <div className={styles.dropdownAnchor} ref={dropdown.ref}>
+          <button
+            className={styles.addIconBtn}
+            onClick={() => dropdown.setOpen(o => !o)}
+            title="Ajouter un tri"
+          >
+            +
+          </button>
+          {dropdown.open && (
+            <div className={styles.dropdown}>
+              <SortEditor
+                onSave={s => { onAdd(s); dropdown.setOpen(false); }}
+                onCancel={() => dropdown.setOpen(false)}
+                existing={sorts.map(s => s.fieldId)}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

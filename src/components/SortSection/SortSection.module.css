@@ -1,8 +1,4 @@
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+.wrapper { display: flex; flex-direction: column; gap: 6px; }
 
 .labelRow {
   display: flex;
@@ -13,7 +9,7 @@
 
 .label {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   color: #696e7b;
 }
 
@@ -30,36 +26,20 @@
   transition: color 0.15s;
   line-height: 1;
 }
-
 .closeBtn:hover { color: #696e7b; }
 
 .section {
   background: #f5f6f8;
   border-radius: 8px;
-  padding: 12px 16px;
-  min-height: 52px;
+  padding: 14px 18px;
+  min-height: 58px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
 }
 
-.emptyBtn {
-  display: inline-flex;
-  align-items: center;
-  background: #fff;
-  border: 1px solid #d8dae0;
-  border-radius: 6px;
-  padding: 7px 14px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #696e7b;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.emptyBtn:hover { background: #eceef2; }
-
+/* Active sort pills */
 .pill {
   display: inline-flex;
   align-items: center;
@@ -68,15 +48,12 @@
   border: 1px solid #d8dae0;
   border-radius: 6px;
   padding: 6px 10px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: #4c525e;
-  cursor: pointer;
+  cursor: default;
   user-select: none;
-  transition: background 0.15s;
 }
-
-.pill:hover { background: #eceef2; }
 
 .dirBtn {
   font-size: 11px;
@@ -87,9 +64,8 @@
   border-radius: 4px;
   padding: 2px 6px;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.12s, color 0.12s;
 }
-
 .dirBtn:hover { background: #dfe0e6; color: #4c525e; }
 
 .pillRemove {
@@ -101,24 +77,103 @@
   background: none;
   border: none;
   line-height: 1;
-  transition: color 0.15s;
+  transition: color 0.12s;
 }
-
 .pillRemove:hover { color: #4c525e; }
 
-.addBtn {
+/* The "+" add button — matches Metabase's small square button */
+.addIconBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: #fff;
-  border: 1px solid #d8dae0;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  background: #e8eaee;
+  border: none;
+  border-radius: 6px;
   color: #696e7b;
   cursor: pointer;
-  transition: background 0.15s;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1;
+  transition: background 0.12s, color 0.12s;
   flex-shrink: 0;
 }
+.addIconBtn:hover { background: #d8dae0; color: #2e353b; }
 
-.addBtn:hover { background: #eceef2; }
+/* Dropdown */
+.dropdownAnchor { position: relative; }
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 9999;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+  min-width: 320px;
+  overflow: hidden;
+  border: 1px solid #ebebeb;
+}
+
+.editorInner {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 14px;
+}
+
+.editorLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #949599;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.editorSelect {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #2e353b;
+  outline: none;
+  background: #fff;
+  cursor: pointer;
+}
+.editorSelect:focus { border-color: #696e7b; box-shadow: 0 0 0 2px rgba(105,110,123,0.12); }
+
+.editorActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.cancelBtn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background: #f0f0f0;
+  color: #696e7b;
+  font-size: 13px;
+  cursor: pointer;
+}
+.cancelBtn:hover { background: #e5e5e5; }
+
+.saveBtn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background: #509ee3;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.saveBtn:disabled { background: #ccc; cursor: not-allowed; }
+.saveBtn:not(:disabled):hover { background: #3d8ed4; }
