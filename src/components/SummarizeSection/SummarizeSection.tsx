@@ -3,6 +3,7 @@ import { IconX, IconChevronRight } from '@tabler/icons-react';
 import { Metric, GroupBy, AggregationType } from '../../engine/types';
 import { AGGREGATION_OPTIONS } from '../../config/operators';
 import { useConfig } from '../../config/ConfigContext';
+import { CustomSelect } from '../ui/CustomSelect';
 import styles from './SummarizeSection.module.css';
 
 interface Props {
@@ -37,8 +38,8 @@ function useDropdown() {
 
 function MetricEditor({ onSave, onCancel }: { onSave: (m: Omit<Metric, 'id'>) => void; onCancel: () => void }) {
   const { config } = useConfig();
-  const [aggregation, setAggregation] = useState<AggregationType | ''>('');
-  const [fieldId, setFieldId] = useState<string>('');
+  const [aggregation, setAggregation] = useState('');
+  const [fieldId, setFieldId] = useState('');
   const aggOpt = AGGREGATION_OPTIONS.find(a => a.value === aggregation);
   const needsField = aggOpt?.fieldRequired ?? false;
   const numFields = config.fields.filter(f => f.type === 'number');
@@ -48,19 +49,22 @@ function MetricEditor({ onSave, onCancel }: { onSave: (m: Omit<Metric, 'id'>) =>
     <div className={styles.editorInner}>
       <div>
         <div className={styles.editorLabel}>Fonction</div>
-        <select className={styles.editorSelect} value={aggregation}
-          onChange={e => { setAggregation(e.target.value as AggregationType); setFieldId(''); }}>
-          <option value="">Choisir une fonction…</option>
-          {AGGREGATION_OPTIONS.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
-        </select>
+        <CustomSelect
+          options={AGGREGATION_OPTIONS.map(a => ({ value: a.value, label: a.label }))}
+          value={aggregation}
+          onChange={v => { setAggregation(v); setFieldId(''); }}
+          placeholder="Choisir une fonction…"
+        />
       </div>
       {needsField && (
         <div>
           <div className={styles.editorLabel}>Colonne</div>
-          <select className={styles.editorSelect} value={fieldId} onChange={e => setFieldId(e.target.value)}>
-            <option value="">Choisir une colonne…</option>
-            {numFields.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
-          </select>
+          <CustomSelect
+            options={numFields.map(f => ({ value: f.id, label: f.label }))}
+            value={fieldId}
+            onChange={setFieldId}
+            placeholder="Choisir une colonne…"
+          />
         </div>
       )}
       <div className={styles.editorActions}>
@@ -76,17 +80,19 @@ function MetricEditor({ onSave, onCancel }: { onSave: (m: Omit<Metric, 'id'>) =>
 
 function GroupEditor({ onSave, onCancel, existing }: { onSave: (g: Omit<GroupBy, 'id'>) => void; onCancel: () => void; existing: string[] }) {
   const { config } = useConfig();
-  const [fieldId, setFieldId] = useState<string>('');
+  const [fieldId, setFieldId] = useState('');
   const available = config.fields.filter(f => !existing.includes(f.id));
 
   return (
     <div className={styles.editorInner}>
       <div>
         <div className={styles.editorLabel}>Regrouper par</div>
-        <select className={styles.editorSelect} value={fieldId} onChange={e => setFieldId(e.target.value)}>
-          <option value="">Choisir une colonne…</option>
-          {available.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
-        </select>
+        <CustomSelect
+          options={available.map(f => ({ value: f.id, label: f.label }))}
+          value={fieldId}
+          onChange={setFieldId}
+          placeholder="Choisir une colonne…"
+        />
       </div>
       <div className={styles.editorActions}>
         <button className={styles.cancelBtn} onClick={onCancel}>Annuler</button>
@@ -107,13 +113,11 @@ export function SummarizeSection({ metrics, groups, onAddMetric, onRemoveMetric,
     <div className={styles.wrapper}>
       <div className={styles.labelRow}>
         <span className={styles.label}>Résumer</span>
-        <button className={styles.closeBtn} onClick={onHide} title="Masquer le résumé">
-          <IconX size={14} />
-        </button>
+        <button className={styles.closeBtn} onClick={onHide} title="Masquer"><IconX size={14} /></button>
       </div>
       <div className={styles.sectionOuter}>
         <div className={styles.section}>
-          {/* Metrics block */}
+          {/* Left: metrics */}
           <div className={styles.metricsBlock}>
             {metrics.map(m => (
               <span key={m.id} className={styles.metricPill}>
@@ -122,13 +126,10 @@ export function SummarizeSection({ metrics, groups, onAddMetric, onRemoveMetric,
               </span>
             ))}
             <div className={styles.dropdownAnchor} ref={metricDropdown.ref}>
-              {metrics.length > 0 ? (
-                <button className={styles.addBtn} onClick={() => metricDropdown.setOpen(o => !o)} title="Ajouter">+</button>
-              ) : (
-                <button className={styles.emptyMetricBtn} onClick={() => metricDropdown.setOpen(o => !o)}>
-                  Choisissez une fonction
-                </button>
-              )}
+              {metrics.length > 0
+                ? <button className={styles.addBtn} onClick={() => metricDropdown.setOpen(o => !o)} title="Ajouter">+</button>
+                : <button className={styles.emptyMetricBtn} onClick={() => metricDropdown.setOpen(o => !o)}>Choisissez une fonction</button>
+              }
               {metricDropdown.open && (
                 <div className={styles.dropdown}>
                   <MetricEditor onSave={m => { onAddMetric(m); metricDropdown.setOpen(false); }} onCancel={() => metricDropdown.setOpen(false)} />
@@ -139,7 +140,7 @@ export function SummarizeSection({ metrics, groups, onAddMetric, onRemoveMetric,
 
           <div className={styles.parLabel}>par</div>
 
-          {/* Groups block */}
+          {/* Right: groups */}
           <div className={styles.groupsBlock}>
             {groups.map(g => {
               const field = config.fields.find(f => f.id === g.fieldId);
@@ -151,29 +152,20 @@ export function SummarizeSection({ metrics, groups, onAddMetric, onRemoveMetric,
               );
             })}
             <div className={styles.dropdownAnchor} ref={groupDropdown.ref}>
-              {groups.length > 0 ? (
-                <button className={styles.addBtn} onClick={() => groupDropdown.setOpen(o => !o)} title="Ajouter">+</button>
-              ) : (
-                <button className={styles.emptyGroupBtn} onClick={() => groupDropdown.setOpen(o => !o)}>
-                  Choisissez une colonne pour regrouper par
-                </button>
-              )}
+              {groups.length > 0
+                ? <button className={styles.addBtn} onClick={() => groupDropdown.setOpen(o => !o)} title="Ajouter">+</button>
+                : <button className={styles.emptyGroupBtn} onClick={() => groupDropdown.setOpen(o => !o)}>Choisissez une colonne pour regrouper par</button>
+              }
               {groupDropdown.open && (
                 <div className={styles.dropdown}>
-                  <GroupEditor
-                    onSave={g => { onAddGroup(g); groupDropdown.setOpen(false); }}
-                    onCancel={() => groupDropdown.setOpen(false)}
-                    existing={groups.map(g => g.fieldId)}
-                  />
+                  <GroupEditor onSave={g => { onAddGroup(g); groupDropdown.setOpen(false); }} onCancel={() => groupDropdown.setOpen(false)} existing={groups.map(g => g.fieldId)} />
                 </div>
               )}
             </div>
           </div>
         </div>
         {(metrics.length > 0 || groups.length > 0) && (
-          <button className={styles.arrowBtn} title="Voir les résultats">
-            <IconChevronRight size={16} />
-          </button>
+          <button className={styles.arrowBtn} title="Voir les résultats"><IconChevronRight size={16} /></button>
         )}
       </div>
     </div>

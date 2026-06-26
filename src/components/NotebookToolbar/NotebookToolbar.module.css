@@ -4,19 +4,19 @@
 
 .miniBtn {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 14px; border-radius: 8px; border: none;
-  font-size: 13px; font-weight: 700; cursor: pointer;
-  transition: filter 0.12s;
+  padding: 8px 16px; border-radius: 8px; border: none;
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: filter 0.12s;
 }
-.miniBtn:hover { filter: brightness(0.95); }
+.miniBtn:hover { filter: brightness(0.94); }
 
-.filterBtn   { background: #eeebf4; color: #7172ad; }
-.summarizeBtn{ background: #e6f3d6; color: #509d31; }
+.filterBtn   { background: #f1f1fc; color: #7172ad; }
+.summarizeBtn{ background: #eff4ea; color: #689735; }
 .neutralBtn  { background: #f5f6f8; color: #696e7b; }
 
+/* Visualiser — no icon, bigger, left-aligned like Metabase */
 .visualizeBtn {
-  display: inline-flex; align-self: flex-start; align-items: center; gap: 6px;
-  padding: 10px 22px; border-radius: 8px; border: none;
+  display: inline-flex; align-self: flex-start; align-items: center;
+  padding: 10px 24px; border-radius: 8px; border: none;
   background: #509ee3; color: #fff; font-size: 14px; font-weight: 700;
   cursor: pointer; transition: background 0.15s;
 }

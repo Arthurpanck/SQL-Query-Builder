@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { IconX, IconArrowUp, IconArrowDown } from '@tabler/icons-react';
 import { SortItem, SortDirection } from '../../engine/types';
 import { useConfig } from '../../config/ConfigContext';
+import { CustomSelect } from '../ui/CustomSelect';
 import styles from './SortSection.module.css';
 
 interface Props {
@@ -25,6 +26,11 @@ function useDropdown() {
   return { open, setOpen, ref };
 }
 
+const DIR_OPTIONS = [
+  { value: 'ASC', label: 'Croissant (A → Z)' },
+  { value: 'DESC', label: 'Décroissant (Z → A)' },
+];
+
 function SortEditor({ onSave, onCancel, existing }: {
   onSave: (s: Omit<SortItem, 'id'>) => void;
   onCancel: () => void;
@@ -32,29 +38,33 @@ function SortEditor({ onSave, onCancel, existing }: {
 }) {
   const { config } = useConfig();
   const [fieldId, setFieldId] = useState('');
-  const [direction, setDirection] = useState<SortDirection>('ASC');
+  const [direction, setDirection] = useState('ASC');
   const available = config.fields.filter(f => !existing.includes(f.id));
-  const canSave = fieldId !== '';
 
   return (
     <div className={styles.editorInner}>
       <div>
         <div className={styles.editorLabel}>Colonne</div>
-        <select className={styles.editorSelect} value={fieldId} onChange={e => setFieldId(e.target.value)}>
-          <option value="">Choisir une colonne…</option>
-          {available.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
-        </select>
+        <CustomSelect
+          options={available.map(f => ({ value: f.id, label: f.label }))}
+          value={fieldId}
+          onChange={setFieldId}
+          placeholder="Choisir une colonne…"
+        />
       </div>
       <div>
         <div className={styles.editorLabel}>Ordre</div>
-        <select className={styles.editorSelect} value={direction} onChange={e => setDirection(e.target.value as SortDirection)}>
-          <option value="ASC">Croissant (A → Z)</option>
-          <option value="DESC">Décroissant (Z → A)</option>
-        </select>
+        <CustomSelect
+          options={DIR_OPTIONS}
+          value={direction}
+          onChange={setDirection}
+          placeholder="Choisir un ordre…"
+        />
       </div>
       <div className={styles.editorActions}>
         <button className={styles.cancelBtn} onClick={onCancel}>Annuler</button>
-        <button className={styles.saveBtn} disabled={!canSave} onClick={() => canSave && onSave({ fieldId, direction })}>
+        <button className={styles.saveBtn} disabled={!fieldId}
+          onClick={() => fieldId && onSave({ fieldId, direction: direction as SortDirection })}>
           Ajouter
         </button>
       </div>
@@ -89,13 +99,7 @@ export function SortSection({ sorts, onAdd, onUpdate, onRemove, onClear }: Props
           );
         })}
         <div className={styles.dropdownAnchor} ref={dropdown.ref}>
-          <button
-            className={styles.addIconBtn}
-            onClick={() => dropdown.setOpen(o => !o)}
-            title="Ajouter un tri"
-          >
-            +
-          </button>
+          <button className={styles.addIconBtn} onClick={() => dropdown.setOpen(o => !o)} title="Ajouter un tri">+</button>
           {dropdown.open && (
             <div className={styles.dropdown}>
               <SortEditor

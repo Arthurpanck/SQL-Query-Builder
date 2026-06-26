@@ -1,101 +1,79 @@
-/* Metabase summarize color: #84BB4C */
+/* Résumer colors: label #689735, bg #eff4ea, pills #689735 */
 .wrapper { display: flex; flex-direction: column; gap: 6px; }
 
-.labelRow {
-  display: flex; align-items: center; justify-content: space-between; padding: 0 2px;
-}
-
-.label { font-size: 14px; font-weight: 700; color: #84bb4c; }
+.labelRow { display: flex; align-items: center; justify-content: space-between; padding: 0 2px; }
+.label { font-size: 14px; font-weight: 700; color: #689735; }
 
 .closeBtn {
   display: flex; align-items: center; justify-content: center;
-  background: none; border: none; color: #c5dfab; cursor: pointer;
+  background: none; border: none; color: #bdd49a; cursor: pointer;
   padding: 2px; border-radius: 4px; transition: color 0.15s; line-height: 1;
 }
-.closeBtn:hover { color: #84bb4c; }
+.closeBtn:hover { color: #689735; }
 
 .sectionOuter { display: flex; align-items: center; gap: 6px; }
 
-.section {
-  flex: 1;
-  display: flex;
-  align-items: stretch;
-  overflow: visible;
-}
+.section { flex: 1; display: flex; align-items: stretch; overflow: visible; }
 
+/* Left metrics block bg: #eff4ea */
 .metricsBlock {
-  flex: 1;
-  background: #e6f3d6;
-  border-radius: 8px 0 0 8px;
-  padding: 14px 18px;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
-  min-height: 58px;
-  position: relative;
+  flex: 1; background: #eff4ea; border-radius: 8px 0 0 8px;
+  padding: 14px 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  min-height: 58px; position: relative;
 }
 
 .parLabel {
-  display: flex; align-items: center;
-  padding: 0 14px;
+  display: flex; align-items: center; padding: 0 14px;
   font-size: 14px; font-weight: 400; color: #696e7b;
-  background: #e6f3d6;
-  flex-shrink: 0; white-space: nowrap;
+  background: #eff4ea; flex-shrink: 0; white-space: nowrap;
 }
 
+/* Right groups block bg: #eff4ea */
 .groupsBlock {
-  flex: 1;
-  background: #e6f3d6;
-  border-radius: 0 8px 8px 0;
-  padding: 14px 18px;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
-  min-height: 58px;
-  position: relative;
+  flex: 1; background: #eff4ea; border-radius: 0 8px 8px 0;
+  padding: 14px 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  min-height: 58px; position: relative;
 }
 
-/* Empty state buttons — transparent bg, just border */
+/* Empty buttons: transparent, border #689735 */
 .emptyMetricBtn, .emptyGroupBtn {
   display: inline-flex; align-items: center;
-  background: transparent;
-  border: 1px solid #88bf4d;
-  border-radius: 6px; padding: 8px 16px;
-  font-size: 14px; font-weight: 400; color: #509d31;
+  background: transparent; border: 1px solid #689735; border-radius: 6px;
+  padding: 8px 16px; font-size: 14px; font-weight: 400; color: #689735;
   cursor: pointer; transition: background 0.12s;
 }
-.emptyMetricBtn:hover, .emptyGroupBtn:hover { background: rgba(136,191,77,0.12); }
+.emptyMetricBtn:hover, .emptyGroupBtn:hover { background: rgba(104,151,53,0.08); }
 
-/* Filled pills */
+/* Pills: bg #689735, white bold text */
 .metricPill, .groupPill {
   display: inline-flex; align-items: center; gap: 6px;
-  background: #509ee3; border: none; border-radius: 6px;
-  padding: 6px 10px; font-size: 13px; font-weight: 700;
-  color: #fff; cursor: pointer; user-select: none;
-  transition: filter 0.12s;
+  background: #689735; border: none; border-radius: 6px;
+  padding: 6px 12px; font-size: 13px; font-weight: 700;
+  color: #fff; cursor: pointer; user-select: none; transition: filter 0.12s;
 }
 .metricPill:hover, .groupPill:hover { filter: brightness(1.1); }
 
 .pillRemove {
-  display: flex; align-items: center; opacity: 0.7;
-  cursor: pointer; padding: 0; background: none; border: none; line-height: 1;
-  color: #fff; transition: opacity 0.12s;
+  display: flex; align-items: center; opacity: 0.75;
+  cursor: pointer; padding: 0; background: none; border: none;
+  line-height: 1; color: #fff; transition: opacity 0.12s;
 }
 .pillRemove:hover { opacity: 1; }
 
-/* Add button (circle +) */
 .addBtn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 28px; height: 28px;
-  background: rgba(136,191,77,0.15); border: 1px solid #88bf4d;
-  border-radius: 50%; color: #509d31;
+  background: rgba(104,151,53,0.1); border: 1px solid #689735;
+  border-radius: 50%; color: #689735;
   cursor: pointer; font-size: 18px; font-weight: 300; line-height: 1;
   transition: background 0.12s; flex-shrink: 0;
 }
-.addBtn:hover { background: rgba(136,191,77,0.28); }
+.addBtn:hover { background: rgba(104,151,53,0.22); }
 
-/* Arrow btn */
 .arrowBtn {
   display: flex; align-items: center; justify-content: center;
   width: 28px; height: 28px; background: none; border: none;
-  cursor: pointer; color: #555; flex-shrink: 0;
-  transition: color 0.12s;
+  cursor: pointer; color: #555; flex-shrink: 0; transition: color 0.12s;
 }
 .arrowBtn:hover { color: #000; }
 
@@ -112,28 +90,22 @@
 .editorInner { display: flex; flex-direction: column; padding: 16px; gap: 14px; }
 
 .editorLabel {
-  font-size: 12px; font-weight: 600; color: #949599;
-  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+  font-size: 11px; font-weight: 700; color: #949599;
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;
 }
-
-.editorSelect {
-  width: 100%; border: 1px solid #e0e0e0; border-radius: 6px;
-  padding: 9px 12px; font-size: 14px; font-weight: 400;
-  color: #2e353b; outline: none; background: #fff; cursor: pointer;
-}
-.editorSelect:focus { border-color: #84bb4c; box-shadow: 0 0 0 2px rgba(132,187,76,0.12); }
 
 .editorActions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 2px; }
 
 .cancelBtn {
   padding: 8px 16px; border-radius: 6px; border: none;
-  background: #f0f0f0; color: #696e7b; font-size: 13px; cursor: pointer;
+  background: #f0f0f0; color: #696e7b; font-size: 13px; font-weight: 600;
+  cursor: pointer;
 }
 .cancelBtn:hover { background: #e5e5e5; }
 
 .saveBtn {
   padding: 8px 16px; border-radius: 6px; border: none;
-  background: #84bb4c; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
+  background: #689735; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
 }
 .saveBtn:disabled { background: #ccc; cursor: not-allowed; }
-.saveBtn:not(:disabled):hover { background: #6fa83a; }
+.saveBtn:not(:disabled):hover { background: #577e2c; }
