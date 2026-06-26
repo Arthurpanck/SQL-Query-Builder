@@ -43,6 +43,7 @@
 
 .visualizeBtn {
   display: inline-flex;
+  align-self: flex-start;
   align-items: center;
   gap: 6px;
   padding: 10px 22px;
