@@ -1,57 +1,92 @@
-.container {
+.wrapper { display: flex; flex-direction: column; gap: 0; }
+
+/* Toggle button row */
+.toggleRow { display: flex; align-items: center; }
+
+.toggleBtn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+  font-size: 13px; font-weight: 600; color: #696e7b;
+  padding: 6px 4px; border-radius: 6px;
+  transition: color 0.12s;
+}
+.toggleBtn:hover { color: #2e353b; }
+
+.sqlIcon { flex-shrink: 0; }
+
+/* SQL panel */
+.panel {
+  margin-top: 8px;
   background: #1e1e2e;
   border-radius: 8px;
-  padding: 16px 20px;
-  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
+.panelHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-.title {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #6e7280;
+.panelTitle {
+  font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5);
+  text-transform: uppercase; letter-spacing: 0.08em;
 }
 
 .copyBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
-  color: #6e7280;
-  background: none;
-  border: 1px solid #3a3a52;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 4px;
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  cursor: pointer; transition: all 0.12s;
+}
+.copyBtn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+/* Code area */
+.codeWrap {
+  display: flex;
+  padding: 12px 0;
+  max-height: 320px; overflow-y: auto;
 }
 
-.copyBtn:hover {
-  background: #3a3a52;
-  color: #cdd6f4;
+.lineNumbers {
+  display: flex; flex-direction: column;
+  padding: 0 12px 0 16px; min-width: 48px;
+  user-select: none;
+}
+
+.lineNum {
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 12px; line-height: 1.7;
+  color: rgba(255,255,255,0.2); text-align: right;
 }
 
 .code {
-  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
-  font-size: 13px;
-  line-height: 1.7;
+  flex: 1;
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 12px; line-height: 1.7;
   color: #cdd6f4;
-  white-space: pre;
-  overflow-x: auto;
-  margin: 0;
+  white-space: pre; overflow-x: auto;
+  margin: 0; padding: 0 16px 0 0;
 }
 
-/* SQL syntax highlighting */
-.kw { color: #cba6f7; }    /* keywords: SELECT, FROM, WHERE, AND, GROUP BY */
-.field { color: #89dceb; } /* field names */
-.val { color: #a6e3a1; }   /* values */
-.op { color: #fab387; }    /* operators */
+/* Syntax tokens */
+.kw  { color: #cba6f7; font-weight: 600; }
+.col { color: #89dceb; }
+.str { color: #a6e3a1; }
+.num { color: #fab387; }
+
+/* Convert link */
+.convertRow {
+  padding: 10px 16px 12px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.convertBtn {
+  background: none; border: none; cursor: pointer;
+  font-size: 12px; font-weight: 600;
+  color: #509ee3;
+  padding: 0;
+  transition: color 0.12s;
+}
+.convertBtn:hover { color: #7bb8f0; text-decoration: underline; }

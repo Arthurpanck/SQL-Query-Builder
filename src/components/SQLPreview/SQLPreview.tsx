@@ -2,40 +2,28 @@ import { useState } from 'react';
 import { IconCopy, IconCheck } from '@tabler/icons-react';
 import styles from './SQLPreview.module.css';
 
-interface Props {
-  sql: string;
-}
+interface Props { sql: string; }
 
-const KEYWORDS = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'GROUP BY', 'ORDER BY', 'LIMIT', 'BETWEEN', 'LIKE', 'NOT LIKE', 'IS NULL', 'IS NOT NULL', 'COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'DISTINCT'];
+const KW = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'GROUP BY', 'ORDER BY', 'LIMIT',
+            'BETWEEN', 'LIKE', 'NOT LIKE', 'IS NULL', 'IS NOT NULL',
+            'COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'DISTINCT', 'ASC', 'DESC'];
 
-function highlightSQL(sql: string): string {
-  let result = sql
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-  // Highlight keywords
-  KEYWORDS.forEach(kw => {
-    result = result.replace(
-      new RegExp(`\\b${kw}\\b`, 'g'),
-      `<span class="${styles.kw}">${kw}</span>`
-    );
+function highlight(sql: string): string {
+  let r = sql.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  KW.forEach(k => {
+    r = r.replace(new RegExp(`\\b${k}\\b`,'g'), `<span class="${styles.kw}">${k}</span>`);
   });
-
-  // Highlight string values
-  result = result.replace(/'[^']*'/g, match => `<span class="${styles.val}">${match}</span>`);
-
-  // Highlight numbers
-  result = result.replace(/\b(\d+(?:\.\d+)?)\b/g, `<span class="${styles.val}">$1</span>`);
-
-  // Highlight operators
-  result = result.replace(/( [=!<>]+(?:=)? )/g, `<span class="${styles.op}">$1</span>`);
-
-  return result;
+  r = r.replace(/"[^"]*"/g, m => `<span class="${styles.col}">${m}</span>`);
+  r = r.replace(/'[^']*'/g, m => `<span class="${styles.str}">${m}</span>`);
+  r = r.replace(/\b(\d+)\b/g, `<span class="${styles.num}">$1</span>`);
+  return r;
 }
 
 export function SQLPreview({ sql }: Props) {
+  const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const lines = sql.split('\n');
 
   async function handleCopy() {
     await navigator.clipboard.writeText(sql);
@@ -44,18 +32,54 @@ export function SQLPreview({ sql }: Props) {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <span className={styles.title}>SQL généré</span>
-        <button className={styles.copyBtn} onClick={handleCopy}>
-          {copied ? <IconCheck size={12} /> : <IconCopy size={12} />}
-          {copied ? 'Copié !' : 'Copier'}
+    <div className={styles.wrapper}>
+      {/* Toggle button row */}
+      <div className={styles.toggleRow}>
+        <button
+          className={styles.toggleBtn}
+          onClick={() => setOpen(v => !v)}
+          title={open ? 'Masquer le SQL' : 'Afficher le SQL'}
+        >
+          {/* >_ icon SVG exact from Metabase */}
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" className={styles.sqlIcon}>
+            <path d="M3.53 2.97a.75.75 0 0 0-1.06 1.06L5.44 7 2.47 9.97a.75.75 0 1 0 1.06 1.06l3.5-3.5a.75.75 0 0 0 0-1.06l-3.5-3.5zM7 12.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5H7z"/>
+          </svg>
+          {open ? 'Masquer le SQL' : 'Afficher le SQL'}
         </button>
       </div>
-      <pre
-        className={styles.code}
-        dangerouslySetInnerHTML={{ __html: highlightSQL(sql) }}
-      />
+
+      {/* SQL panel */}
+      {open && (
+        <div className={styles.panel}>
+          <div className={styles.panelHeader}>
+            <span className={styles.panelTitle}>SQL pour cette question</span>
+            <button className={styles.copyBtn} onClick={handleCopy} title="Copier">
+              {copied ? <IconCheck size={13} /> : <IconCopy size={13} />}
+              {copied ? 'Copié !' : 'Copier'}
+            </button>
+          </div>
+
+          {/* Code with line numbers */}
+          <div className={styles.codeWrap}>
+            <div className={styles.lineNumbers}>
+              {lines.map((_, i) => (
+                <div key={i} className={styles.lineNum}>{i + 1}</div>
+              ))}
+            </div>
+            <pre
+              className={styles.code}
+              dangerouslySetInnerHTML={{ __html: highlight(sql) }}
+            />
+          </div>
+
+          {/* Convertir link */}
+          <div className={styles.convertRow}>
+            <button className={styles.convertBtn} title="Bascule vers l'éditeur SQL natif">
+              Convertir cette question en SQL
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

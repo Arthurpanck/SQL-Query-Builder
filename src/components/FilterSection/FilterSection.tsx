@@ -3,6 +3,7 @@ import { IconX, IconChevronRight, IconSearch, IconChevronLeft } from '@tabler/ic
 import { FilterCondition, FilterOperator, FieldType } from '../../engine/types';
 import { getOperatorsForType } from '../../config/operators';
 import { useConfig } from '../../config/ConfigContext';
+import { CustomSelect } from '../ui/CustomSelect';
 import styles from './FilterSection.module.css';
 
 interface Props {
@@ -155,16 +156,14 @@ function FilterPicker({ onSave, initial, initialFieldId }: FilterPickerProps) {
         </button>
         <span className={styles.valuePanelFieldName}>{selectedField?.label}</span>
         <span className={styles.headerSep}>|</span>
-        <select
-          className={styles.operatorSelect}
-          value={operator}
-          onChange={e => setOperator(e.target.value as FilterOperator)}
-        >
-          {operators.map(op => (
-            <option key={op.value} value={op.value}>{op.label}</option>
-          ))}
-        </select>
-        <IconChevronRight size={14} color="#7172ad" />
+        <div className={styles.operatorSelectWrap}>
+          <CustomSelect
+            options={operators.map(op => ({ value: op.value, label: op.label }))}
+            value={operator}
+            onChange={v => setOperator(v as FilterOperator)}
+            placeholder="Opérateur…"
+          />
+        </div>
       </div>
 
       <div className={styles.valueBody}>

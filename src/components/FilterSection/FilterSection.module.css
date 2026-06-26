@@ -130,11 +130,8 @@
 .valuePanelFieldName { font-size: 14px; font-weight: 700; color: #2e353b; }
 .headerSep { color: #d0d0d0; font-size: 14px; }
 
-.operatorSelect {
-  border: 1px solid #e0e0e0; border-radius: 6px;
-  padding: 5px 10px; font-size: 13px;
-  color: #2e353b; background: #fff; cursor: pointer; outline: none;
-}
+/* CustomSelect wrapper in header — compact size */
+.operatorSelectWrap { min-width: 150px; flex: 1; }
 
 .valueBody { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
 
