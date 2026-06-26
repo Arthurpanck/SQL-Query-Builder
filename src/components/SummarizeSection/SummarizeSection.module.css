@@ -38,19 +38,21 @@
   flex: 1;
   display: flex;
   align-items: stretch;
-  border-radius: 8px;
-  overflow: hidden;
+  /* NO overflow: hidden — cliperait les dropdowns */
+  overflow: visible;
 }
 
 .metricsBlock {
   flex: 1;
-  background: #f2f8e8;
+  background: #eef6e0;
   padding: 14px 18px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   min-height: 58px;
+  border-radius: 8px 0 0 8px;
+  position: relative;
 }
 
 .parLabel {
@@ -60,32 +62,34 @@
   font-size: 14px;
   font-weight: 400;
   color: #696e7b;
-  background: #f2f8e8;
+  background: #eef6e0;
   flex-shrink: 0;
   white-space: nowrap;
 }
 
 .groupsBlock {
   flex: 1;
-  background: #f2f8e8;
+  background: #eef6e0;
   padding: 14px 18px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   min-height: 58px;
+  border-radius: 0 8px 8px 0;
+  position: relative;
 }
 
 .emptyMetricBtn, .emptyGroupBtn {
   display: inline-flex;
   align-items: center;
   background: #fff;
-  border: 1px solid #b8d98b;
+  border: 1px solid #88bf4d;
   border-radius: 6px;
   padding: 8px 16px;
   font-size: 14px;
   font-weight: 400;
-  color: #84bb4c;
+  color: #509d31;
   cursor: pointer;
   transition: background 0.15s;
 }

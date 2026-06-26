@@ -1,8 +1,4 @@
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+.wrapper { display: flex; flex-direction: column; gap: 6px; }
 
 .labelRow {
   display: flex;
@@ -12,9 +8,10 @@
 }
 
 .label {
-  font-size: 14px;
-  font-weight: 700;
-  color: #696e7b;
+  font-size: 13px;
+  font-weight: 400;
+  color: #949599;
+  font-style: italic;
 }
 
 .closeBtn {
@@ -30,26 +27,43 @@
   transition: color 0.15s;
   line-height: 1;
 }
-
 .closeBtn:hover { color: #696e7b; }
 
 .section {
   background: #f5f6f8;
   border-radius: 8px;
-  padding: 12px 16px;
-  min-height: 52px;
+  padding: 14px 18px;
+  min-height: 58px;
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
-.inputWrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.limitInput {
+  background: #fff;
+  border: 1px solid #d8dae0;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #2e353b;
+  outline: none;
+  width: 180px;
+  transition: border-color 0.12s;
 }
 
-.hint {
-  font-size: 13px;
-  color: #696e7b;
+.limitInput::placeholder {
+  color: #b0b4bb;
+  font-style: italic;
 }
+
+.limitInput:focus {
+  border-color: #509ee3;
+  box-shadow: 0 0 0 2px rgba(80, 158, 227, 0.15);
+}
+
+/* Remove number input arrows */
+.limitInput::-webkit-inner-spin-button,
+.limitInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.limitInput { -moz-appearance: textfield; }

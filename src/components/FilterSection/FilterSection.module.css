@@ -43,7 +43,7 @@
 
 .section {
   flex: 1;
-  background: #f0eef8;
+  background: #eeebf4;
   border-radius: 8px;
   padding: 14px 18px;
   min-height: 58px;
@@ -51,6 +51,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+  overflow: visible;
+  position: relative;
 }
 
 .arrowBtn {
