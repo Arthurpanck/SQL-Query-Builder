@@ -1,40 +1,47 @@
-import {
-  IconFilter,
-  IconSum,
-  IconArrowsSort,
-  IconRowInsertBottom,
-  IconArrowsJoin,
-  IconChartBar,
-} from '@tabler/icons-react';
+import { IconFilter, IconSum, IconArrowsSort, IconRowInsertBottom, IconArrowsJoin, IconChartBar } from '@tabler/icons-react';
 import styles from './NotebookToolbar.module.css';
 
 interface Props {
   hasFilters: boolean;
   hasMetrics: boolean;
+  hasSorts: boolean;
+  hasLimit: boolean;
+  showSort: boolean;
+  showLimit: boolean;
+  onToggleSort: () => void;
+  onToggleLimit: () => void;
 }
 
-export function NotebookToolbar({ hasFilters: _hasFilters, hasMetrics: _hasMetrics }: Props) {
-  const tools = [
-    { id: 'filter',    label: 'Filtre',             Icon: IconFilter,        colorClass: styles.filter },
-    { id: 'summarize', label: 'Résumer',             Icon: IconSum,           colorClass: styles.summarize },
-    { id: 'join',      label: 'Joindre des données', Icon: IconArrowsJoin,    colorClass: styles.join },
-    { id: 'sort',      label: 'Trier',               Icon: IconArrowsSort,    colorClass: styles.inactive },
-    { id: 'limit',     label: 'Limite de lignes',    Icon: IconRowInsertBottom, colorClass: styles.inactive },
-  ];
-
+export function NotebookToolbar({ hasSorts, hasLimit, showSort, showLimit, onToggleSort, onToggleLimit }: Props) {
   return (
     <div className={styles.toolbar}>
       <div className={styles.cards}>
-        {tools.map(tool => (
-          <button key={tool.id} className={`${styles.card} ${tool.colorClass}`}>
-            <tool.Icon size={20} stroke={1.8} />
-            {tool.label}
-          </button>
-        ))}
+        <button className={`${styles.card} ${styles.filter}`}>
+          <IconFilter size={20} stroke={1.8} />Filtre
+        </button>
+        <button className={`${styles.card} ${styles.summarize}`}>
+          <IconSum size={20} stroke={1.8} />Résumer
+        </button>
+        <button className={`${styles.card} ${styles.join}`}>
+          <IconArrowsJoin size={20} stroke={1.8} />Joindre des données
+        </button>
+        <button
+          className={`${styles.card} ${showSort || hasSorts ? styles.inactive : styles.inactive}`}
+          onClick={onToggleSort}
+          style={showSort || hasSorts ? { background: '#f0f1f4', color: '#4c525e' } : undefined}
+        >
+          <IconArrowsSort size={20} stroke={1.8} />Trier
+        </button>
+        <button
+          className={`${styles.card} ${styles.inactive}`}
+          onClick={onToggleLimit}
+          style={showLimit || hasLimit ? { background: '#f0f1f4', color: '#4c525e' } : undefined}
+        >
+          <IconRowInsertBottom size={20} stroke={1.8} />Limite de lignes
+        </button>
       </div>
       <button className={styles.visualizeBtn}>
-        <IconChartBar size={16} />
-        Visualiser
+        <IconChartBar size={16} />Visualiser
       </button>
     </div>
   );

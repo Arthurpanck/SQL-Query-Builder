@@ -1,100 +1,95 @@
-import { QueryState, FilterCondition, Metric, FilterOperator } from './types';
-import { fields } from '../config/fields';
+import { QueryState, FilterCondition, Metric, FilterOperator, Field } from './types';
 
 const OPERATOR_SQL: Record<FilterOperator, string> = {
-  equals: '=',
-  not_equals: '!=',
-  contains: 'LIKE',
-  not_contains: 'NOT LIKE',
-  starts_with: 'LIKE',
-  ends_with: 'LIKE',
-  greater: '>',
-  greater_or_equal: '>=',
-  less: '<',
-  less_or_equal: '<=',
-  is_null: 'IS NULL',
-  is_not_null: 'IS NOT NULL',
+  equals: '=', not_equals: '!=',
+  contains: 'LIKE', not_contains: 'NOT LIKE',
+  starts_with: 'LIKE', ends_with: 'LIKE',
+  greater: '>', greater_or_equal: '>=',
+  less: '<', less_or_equal: '<=',
+  is_null: 'IS NULL', is_not_null: 'IS NOT NULL',
   between: 'BETWEEN',
 };
 
-function getField(fieldId: string) {
-  return fields.find(f => f.id === fieldId);
-}
-
-function escapeStr(v: string) {
-  return v.replace(/'/g, "''");
+function col(field: Field): string {
+  return `"${field.column ?? field.label}"`;
 }
 
 function serializeValue(value: string | number | null, type: string): string {
   if (value === null || value === '') return 'NULL';
-  if (type === 'string') return `'${escapeStr(String(value))}'`;
-  return String(value);
+  if (type === 'number') return String(value);
+  if (type === 'boolean') return String(value).toLowerCase() === 'true' ? 'TRUE' : 'FALSE';
+  return `'${String(value).replace(/'/g, "''")}'`;
 }
 
-function serializeFilter(f: FilterCondition): string {
-  const field = getField(f.fieldId);
+function serializeFilter(f: FilterCondition, fields: Field[]): string {
+  const field = fields.find(x => x.id === f.fieldId);
   if (!field) return '';
-  const col = field.label;
-
-  if (f.operator === 'is_null') return `${col} IS NULL`;
-  if (f.operator === 'is_not_null') return `${col} IS NOT NULL`;
+  const c = col(field);
+  if (f.operator === 'is_null') return `${c} IS NULL`;
+  if (f.operator === 'is_not_null') return `${c} IS NOT NULL`;
   if (f.operator === 'between') {
-    const v1 = serializeValue(f.value, field.type);
-    const v2 = serializeValue(f.value2 ?? null, field.type);
-    return `${col} BETWEEN ${v1} AND ${v2}`;
+    return `${c} BETWEEN ${serializeValue(f.value, field.type)} AND ${serializeValue(f.value2 ?? null, field.type)}`;
   }
-  if (f.operator === 'contains') return `${col} LIKE '%${f.value}%'`;
-  if (f.operator === 'not_contains') return `${col} NOT LIKE '%${f.value}%'`;
-  if (f.operator === 'starts_with') return `${col} LIKE '${f.value}%'`;
-  if (f.operator === 'ends_with') return `${col} LIKE '%${f.value}'`;
-
-  const val = serializeValue(f.value, field.type);
-  return `${col} ${OPERATOR_SQL[f.operator]} ${val}`;
+  if (f.operator === 'contains') return `${c} LIKE '%${f.value}%'`;
+  if (f.operator === 'not_contains') return `${c} NOT LIKE '%${f.value}%'`;
+  if (f.operator === 'starts_with') return `${c} LIKE '${f.value}%'`;
+  if (f.operator === 'ends_with') return `${c} LIKE '%${f.value}'`;
+  return `${c} ${OPERATOR_SQL[f.operator]} ${serializeValue(f.value, field.type)}`;
 }
 
-function serializeMetric(m: Metric): string {
+function serializeMetric(m: Metric, fields: Field[]): string {
   if (m.aggregation === 'count' && !m.fieldId) return 'COUNT(*)';
-  if (m.aggregation === 'count_distinct' && m.fieldId) {
-    const f = getField(m.fieldId);
-    return `COUNT(DISTINCT ${f?.label ?? m.fieldId})`;
-  }
-  const f = getField(m.fieldId!);
-  return `${m.aggregation.toUpperCase()}(${f?.label ?? m.fieldId})`;
+  const field = fields.find(x => x.id === m.fieldId);
+  if (!field) return 'COUNT(*)';
+  if (m.aggregation === 'count_distinct') return `COUNT(DISTINCT ${col(field)})`;
+  return `${m.aggregation.toUpperCase()}(${col(field)})`;
 }
 
-export function toSQL(state: QueryState, tableName = 'orders'): string {
-  const { filters, metrics, groups } = state;
+export function toSQL(state: QueryState, fields: Field[], tableName = 'table'): string {
+  const { filters, metrics, groups, sorts, limit } = state;
 
   const selectParts: string[] = [];
   if (groups.length > 0) {
     groups.forEach(g => {
-      const f = getField(g.fieldId);
-      if (f) selectParts.push(f.label);
+      const f = fields.find(x => x.id === g.fieldId);
+      if (f) selectParts.push(col(f));
     });
   }
   if (metrics.length > 0) {
-    metrics.forEach(m => selectParts.push(serializeMetric(m)));
+    metrics.forEach(m => selectParts.push(serializeMetric(m, fields)));
   }
   if (selectParts.length === 0) selectParts.push('*');
 
   const lines: string[] = [
     `SELECT ${selectParts.join(', ')}`,
-    `FROM ${tableName}`,
+    `FROM "${tableName}"`,
   ];
 
   if (filters.length > 0) {
-    const conditions = filters.map(serializeFilter).filter(Boolean);
-    if (conditions.length === 1) {
-      lines.push(`WHERE ${conditions[0]}`);
-    } else {
-      lines.push(`WHERE ${conditions[0]}`);
-      conditions.slice(1).forEach(c => lines.push(`  AND ${c}`));
+    const conds = filters.map(f => serializeFilter(f, fields)).filter(Boolean);
+    if (conds.length === 1) {
+      lines.push(`WHERE ${conds[0]}`);
+    } else if (conds.length > 1) {
+      lines.push(`WHERE ${conds[0]}`);
+      conds.slice(1).forEach(c => lines.push(`  AND ${c}`));
     }
   }
 
   if (groups.length > 0) {
-    const groupCols = groups.map(g => getField(g.fieldId)?.label ?? g.fieldId);
+    const groupCols = groups.map(g => { const f = fields.find(x => x.id === g.fieldId); return f ? col(f) : g.fieldId; });
     lines.push(`GROUP BY ${groupCols.join(', ')}`);
+  }
+
+  if (sorts.length > 0) {
+    const sortCols = sorts.map(s => {
+      const f = fields.find(x => x.id === s.fieldId);
+      return f ? `${col(f)} ${s.direction}` : '';
+    }).filter(Boolean);
+    if (sortCols.length > 0) lines.push(`ORDER BY ${sortCols.join(', ')}`);
+  }
+
+  if (limit !== null) {
+    lines.push(`LIMIT ${limit}`);
   }
 
   return lines.join('\n');

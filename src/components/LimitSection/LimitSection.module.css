@@ -1,0 +1,55 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #696e7b;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #b8bcc4;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color 0.15s;
+  line-height: 1;
+}
+
+.closeBtn:hover { color: #696e7b; }
+
+.section {
+  background: #f5f6f8;
+  border-radius: 8px;
+  padding: 12px 16px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hint {
+  font-size: 13px;
+  color: #696e7b;
+}
