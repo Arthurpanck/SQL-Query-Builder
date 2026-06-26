@@ -1,52 +1,44 @@
-.toolbar {
+﻿.toolbar {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.cards {
+/* Mini icon buttons (Sort + Limit) */
+.miniButtons {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
-.card {
+.miniBtn {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 10px 16px;
-  min-width: 88px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  background: #f5f6f8;
   border: none;
+  border-radius: 6px;
+  color: #949599;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.2;
-  transition: filter 0.12s;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
 }
-.card:hover { filter: brightness(0.95); }
-
-/* Filter: #7172AD */
-.filter { background: #eeebf4; color: #7172ad; }
-
-/* Summarize: #84BB4C */
-.summarize { background: #eef6e0; color: #84bb4c; }
-
-/* Join: #509EE3 */
-.join { background: #e3eefb; color: #509ee3; }
-
-/* Sort + Limit: gray, lighter than before */
-.inactive { background: #f5f6f8; color: #949599; }
+.miniBtn:hover { background: #e9eaec; color: #555; }
+.miniBtnActive {
+  background: #e0e5ec;
+  color: #509ee3;
+}
 
 .visualizeBtn {
   display: inline-flex;
   align-self: flex-start;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: 10px 22px;
+  min-width: 250px;
+  justify-content: center;
   border-radius: 8px;
   border: none;
   background: #509ee3;

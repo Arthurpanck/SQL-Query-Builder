@@ -1,4 +1,4 @@
-import { IconFilter, IconSum, IconArrowsSort, IconRowInsertBottom, IconArrowsJoin, IconChartBar } from '@tabler/icons-react';
+﻿import { IconArrowsSort, IconRowInsertBottom, IconChartBar } from '@tabler/icons-react';
 import styles from './NotebookToolbar.module.css';
 
 interface Props {
@@ -15,33 +15,25 @@ interface Props {
 export function NotebookToolbar({ hasSorts, hasLimit, showSort, showLimit, onToggleSort, onToggleLimit }: Props) {
   return (
     <div className={styles.toolbar}>
-      <div className={styles.cards}>
-        <button className={`${styles.card} ${styles.filter}`}>
-          <IconFilter size={20} stroke={1.8} />Filtre
-        </button>
-        <button className={`${styles.card} ${styles.summarize}`}>
-          <IconSum size={20} stroke={1.8} />Résumer
-        </button>
-        <button className={`${styles.card} ${styles.join}`}>
-          <IconArrowsJoin size={20} stroke={1.8} />Joindre des données
-        </button>
+      <div className={styles.miniButtons}>
         <button
-          className={`${styles.card} ${showSort || hasSorts ? styles.inactive : styles.inactive}`}
+          className={`${styles.miniBtn} ${(showSort || hasSorts) ? styles.miniBtnActive : ''}`}
           onClick={onToggleSort}
-          style={showSort || hasSorts ? { background: '#f0f1f4', color: '#4c525e' } : undefined}
+          title="Trier"
         >
-          <IconArrowsSort size={20} stroke={1.8} />Trier
+          <IconArrowsSort size={16} stroke={1.8} />
         </button>
         <button
-          className={`${styles.card} ${styles.inactive}`}
+          className={`${styles.miniBtn} ${(showLimit || hasLimit) ? styles.miniBtnActive : ''}`}
           onClick={onToggleLimit}
-          style={showLimit || hasLimit ? { background: '#f0f1f4', color: '#4c525e' } : undefined}
+          title="Limite de lignes"
         >
-          <IconRowInsertBottom size={20} stroke={1.8} />Limite de lignes
+          <IconRowInsertBottom size={16} stroke={1.8} />
         </button>
       </div>
       <button className={styles.visualizeBtn}>
-        <IconChartBar size={16} />Visualiser
+        <IconChartBar size={16} />
+        Visualiser
       </button>
     </div>
   );

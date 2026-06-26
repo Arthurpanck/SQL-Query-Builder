@@ -1,4 +1,4 @@
-/* Metabase exact: summarize color #84BB4C */
+﻿/* Metabase exact: summarize color #84BB4C */
 .wrapper { display: flex; flex-direction: column; gap: 6px; }
 
 .labelRow {
@@ -10,7 +10,7 @@
 
 .label {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   color: #84bb4c;
 }
 
@@ -29,7 +29,13 @@
 }
 .closeBtn:hover { color: #84bb4c; }
 
+.sectionOuter {
+  display: flex;
+  align-items: center;
+}
+
 .section {
+  flex: 1;
   display: flex;
   align-items: stretch;
   border-radius: 8px;
@@ -85,28 +91,28 @@
 }
 .emptyMetricBtn:hover, .emptyGroupBtn:hover { background: #f4fae8; }
 
+/* Filled green pills */
 .metricPill, .groupPill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #fff;
-  border: 1px solid #b8d98b;
+  background: #84bb4c;
   border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #4a7a22;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: filter 0.15s;
   user-select: none;
 }
-.metricPill:hover, .groupPill:hover { background: #f4fae8; }
+.metricPill:hover, .groupPill:hover { filter: brightness(1.08); }
 
 .pillRemove {
   display: flex;
   align-items: center;
-  color: currentColor;
-  opacity: 0.5;
+  color: #fff;
+  opacity: 0.8;
   transition: opacity 0.15s;
   cursor: pointer;
   padding: 0;
@@ -116,18 +122,99 @@
 }
 .pillRemove:hover { opacity: 1; }
 
+/* Filled green circle */
 .addBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: #fff;
-  border: 1px solid #b8d98b;
+  width: 26px;
+  height: 26px;
+  background: #84bb4c;
+  border: none;
   border-radius: 50%;
-  color: #84bb4c;
+  color: #fff;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: filter 0.15s;
   flex-shrink: 0;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
 }
-.addBtn:hover { background: #f4fae8; }
+.addBtn:hover { filter: brightness(1.1); }
+
+/* Custom dropdown */
+.dropdownAnchor {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 9999;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  min-width: 280px;
+  overflow: hidden;
+}
+
+.editorInner {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 12px;
+  min-width: 260px;
+}
+
+.editorLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #696e7b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.editorSelect {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 13px;
+  color: #2e353b;
+  outline: none;
+  background: #fff;
+}
+.editorSelect:focus { border-color: #84bb4c; }
+
+.editorActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.cancelBtn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #f0f0f0;
+  color: #696e7b;
+  font-size: 13px;
+  cursor: pointer;
+}
+.cancelBtn:hover { background: #e5e5e5; }
+
+.saveBtn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #84bb4c;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.saveBtn:disabled { background: #ccc; cursor: not-allowed; }
+.saveBtn:not(:disabled):hover { filter: brightness(1.08); }

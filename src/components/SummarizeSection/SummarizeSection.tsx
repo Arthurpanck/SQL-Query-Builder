@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import { Popover, Select, Stack, Button, Group } from '@mantine/core';
-import { IconPlus, IconX } from '@tabler/icons-react';
+﻿import { useState, useRef, useEffect, useCallback } from 'react';
+import { IconX, IconChevronRight } from '@tabler/icons-react';
 import { Metric, GroupBy, AggregationType } from '../../engine/types';
 import { AGGREGATION_OPTIONS } from '../../config/operators';
 import { useConfig } from '../../config/ConfigContext';
@@ -23,109 +22,200 @@ function getMetricLabel(m: Metric, fields: ReturnType<typeof useConfig>['config'
   return `${agg?.label ?? m.aggregation} ${field?.label ?? m.fieldId}`;
 }
 
+function useDropdown() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = useCallback((e: MouseEvent) => {
+    if (ref.current && !ref.current.contains(e.target as Node)) {
+      setOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (open) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [open, handleClickOutside]);
+
+  return { open, setOpen, ref };
+}
+
 function MetricEditor({ onSave, onCancel }: { onSave: (m: Omit<Metric, 'id'>) => void; onCancel: () => void }) {
   const { config } = useConfig();
-  const [aggregation, setAggregation] = useState<AggregationType | null>(null);
-  const [fieldId, setFieldId] = useState<string | null>(null);
+  const [aggregation, setAggregation] = useState<AggregationType | ''>('');
+  const [fieldId, setFieldId] = useState<string>('');
   const aggOpt = AGGREGATION_OPTIONS.find(a => a.value === aggregation);
   const needsField = aggOpt?.fieldRequired ?? false;
   const numFields = config.fields.filter(f => f.type === 'number');
-  const canSave = aggregation && (!needsField || fieldId);
+  const canSave = aggregation !== '' && (!needsField || fieldId !== '');
 
   return (
-    <Stack gap="sm" p="md" style={{ minWidth: 260 }}>
-      <Select label="Fonction" placeholder="Choisir une fonction…"
-        data={AGGREGATION_OPTIONS.map(a => ({ value: a.value, label: a.label }))}
-        value={aggregation} onChange={v => { setAggregation(v as AggregationType); setFieldId(null); }} size="sm" />
+    <div className={styles.editorInner}>
+      <div>
+        <div className={styles.editorLabel}>Fonction</div>
+        <select
+          className={styles.editorSelect}
+          value={aggregation}
+          onChange={e => { setAggregation(e.target.value as AggregationType); setFieldId(''); }}
+        >
+          <option value="">Choisir une fonction…</option>
+          {AGGREGATION_OPTIONS.map(a => (
+            <option key={a.value} value={a.value}>{a.label}</option>
+          ))}
+        </select>
+      </div>
       {needsField && (
-        <Select label="Colonne" placeholder="Choisir une colonne…"
-          data={numFields.map(f => ({ value: f.id, label: f.label }))}
-          value={fieldId} onChange={setFieldId} searchable size="sm" />
+        <div>
+          <div className={styles.editorLabel}>Colonne</div>
+          <select
+            className={styles.editorSelect}
+            value={fieldId}
+            onChange={e => setFieldId(e.target.value)}
+          >
+            <option value="">Choisir une colonne…</option>
+            {numFields.map(f => (
+              <option key={f.id} value={f.id}>{f.label}</option>
+            ))}
+          </select>
+        </div>
       )}
-      <Group gap="xs" justify="flex-end" mt="xs">
-        <Button variant="subtle" size="xs" color="gray" onClick={onCancel}>Annuler</Button>
-        <Button size="xs" disabled={!canSave} onClick={() => canSave && onSave({ aggregation: aggregation!, fieldId })} color="green">Ajouter</Button>
-      </Group>
-    </Stack>
+      <div className={styles.editorActions}>
+        <button className={styles.cancelBtn} onClick={onCancel}>Annuler</button>
+        <button
+          className={styles.saveBtn}
+          disabled={!canSave}
+          onClick={() => canSave && onSave({ aggregation: aggregation as AggregationType, fieldId: fieldId || null })}
+        >
+          Ajouter
+        </button>
+      </div>
+    </div>
   );
 }
 
 function GroupEditor({ onSave, onCancel, existing }: { onSave: (g: Omit<GroupBy, 'id'>) => void; onCancel: () => void; existing: string[] }) {
   const { config } = useConfig();
-  const [fieldId, setFieldId] = useState<string | null>(null);
+  const [fieldId, setFieldId] = useState<string>('');
   const available = config.fields.filter(f => !existing.includes(f.id));
 
   return (
-    <Stack gap="sm" p="md" style={{ minWidth: 240 }}>
-      <Select label="Regrouper par" placeholder="Choisir une colonne…"
-        data={available.map(f => ({ value: f.id, label: f.label }))}
-        value={fieldId} onChange={setFieldId} searchable size="sm" />
-      <Group gap="xs" justify="flex-end">
-        <Button variant="subtle" size="xs" color="gray" onClick={onCancel}>Annuler</Button>
-        <Button size="xs" disabled={!fieldId} onClick={() => fieldId && onSave({ fieldId })} color="green">Ajouter</Button>
-      </Group>
-    </Stack>
+    <div className={styles.editorInner}>
+      <div>
+        <div className={styles.editorLabel}>Regrouper par</div>
+        <select
+          className={styles.editorSelect}
+          value={fieldId}
+          onChange={e => setFieldId(e.target.value)}
+        >
+          <option value="">Choisir une colonne…</option>
+          {available.map(f => (
+            <option key={f.id} value={f.id}>{f.label}</option>
+          ))}
+        </select>
+      </div>
+      <div className={styles.editorActions}>
+        <button className={styles.cancelBtn} onClick={onCancel}>Annuler</button>
+        <button
+          className={styles.saveBtn}
+          disabled={!fieldId}
+          onClick={() => fieldId && onSave({ fieldId })}
+        >
+          Ajouter
+        </button>
+      </div>
+    </div>
   );
 }
 
 export function SummarizeSection({ metrics, groups, onAddMetric, onRemoveMetric, onAddGroup, onRemoveGroup, onClear }: Props) {
   const { config } = useConfig();
-  const [metricOpen, setMetricOpen] = useState(false);
-  const [groupOpen, setGroupOpen] = useState(false);
+  const metricDropdown = useDropdown();
+  const groupDropdown = useDropdown();
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.labelRow}>
         <span className={styles.label}>Résumer</span>
-        <button className={styles.closeBtn} onClick={onClear} title="Supprimer le résumé"><IconX size={14} /></button>
+        <button className={styles.closeBtn} onClick={onClear} title="Supprimer le résumé">
+          <IconX size={14} />
+        </button>
       </div>
-      <div className={styles.section}>
-        <div className={styles.metricsBlock}>
-          {metrics.map(m => (
-            <span key={m.id} className={styles.metricPill}>
-              {getMetricLabel(m, config.fields)}
-              <button className={styles.pillRemove} onClick={() => onRemoveMetric(m.id)}><IconX size={12} /></button>
-            </span>
-          ))}
-          <Popover opened={metricOpen} onClose={() => setMetricOpen(false)} position="bottom-start" withArrow shadow="md" trapFocus>
-            <Popover.Target>
-              {metrics.length > 0 ? (
-                <button className={styles.addBtn} onClick={() => setMetricOpen(o => !o)} title="Ajouter"><IconPlus size={14} /></button>
-              ) : (
-                <button className={styles.emptyMetricBtn} onClick={() => setMetricOpen(o => !o)}>Choisissez une fonction</button>
-              )}
-            </Popover.Target>
-            <Popover.Dropdown p={0}>
-              <MetricEditor onSave={m => { onAddMetric(m); setMetricOpen(false); }} onCancel={() => setMetricOpen(false)} />
-            </Popover.Dropdown>
-          </Popover>
-        </div>
-
-        <div className={styles.parLabel}>par</div>
-
-        <div className={styles.groupsBlock}>
-          {groups.map(g => {
-            const field = config.fields.find(f => f.id === g.fieldId);
-            return (
-              <span key={g.id} className={styles.groupPill}>
-                {field?.label ?? g.fieldId}
-                <button className={styles.pillRemove} onClick={() => onRemoveGroup(g.id)}><IconX size={12} /></button>
+      <div className={styles.sectionOuter}>
+        <div className={styles.section}>
+          <div className={styles.metricsBlock}>
+            {metrics.map(m => (
+              <span key={m.id} className={styles.metricPill}>
+                {getMetricLabel(m, config.fields)}
+                <button className={styles.pillRemove} onClick={() => onRemoveMetric(m.id)}>
+                  <IconX size={12} />
+                </button>
               </span>
-            );
-          })}
-          <Popover opened={groupOpen} onClose={() => setGroupOpen(false)} position="bottom-start" withArrow shadow="md" trapFocus>
-            <Popover.Target>
-              {groups.length > 0 ? (
-                <button className={styles.addBtn} onClick={() => setGroupOpen(o => !o)} title="Ajouter"><IconPlus size={14} /></button>
+            ))}
+            <div className={styles.dropdownAnchor} ref={metricDropdown.ref}>
+              {metrics.length > 0 ? (
+                <button className={styles.addBtn} onClick={() => metricDropdown.setOpen(o => !o)} title="Ajouter">
+                  +
+                </button>
               ) : (
-                <button className={styles.emptyGroupBtn} onClick={() => setGroupOpen(o => !o)}>Choisissez une colonne pour regrouper par</button>
+                <button className={styles.emptyMetricBtn} onClick={() => metricDropdown.setOpen(o => !o)}>
+                  Choisissez une fonction
+                </button>
               )}
-            </Popover.Target>
-            <Popover.Dropdown p={0}>
-              <GroupEditor onSave={g => { onAddGroup(g); setGroupOpen(false); }} onCancel={() => setGroupOpen(false)} existing={groups.map(g => g.fieldId)} />
-            </Popover.Dropdown>
-          </Popover>
+              {metricDropdown.open && (
+                <div className={styles.dropdown}>
+                  <MetricEditor
+                    onSave={m => { onAddMetric(m); metricDropdown.setOpen(false); }}
+                    onCancel={() => metricDropdown.setOpen(false)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.parLabel}>par</div>
+
+          <div className={styles.groupsBlock}>
+            {groups.map(g => {
+              const field = config.fields.find(f => f.id === g.fieldId);
+              return (
+                <span key={g.id} className={styles.groupPill}>
+                  {field?.label ?? g.fieldId}
+                  <button className={styles.pillRemove} onClick={() => onRemoveGroup(g.id)}>
+                    <IconX size={12} />
+                  </button>
+                </span>
+              );
+            })}
+            <div className={styles.dropdownAnchor} ref={groupDropdown.ref}>
+              {groups.length > 0 ? (
+                <button className={styles.addBtn} onClick={() => groupDropdown.setOpen(o => !o)} title="Ajouter">
+                  +
+                </button>
+              ) : (
+                <button className={styles.emptyGroupBtn} onClick={() => groupDropdown.setOpen(o => !o)}>
+                  Choisissez une colonne pour regrouper par
+                </button>
+              )}
+              {groupDropdown.open && (
+                <div className={styles.dropdown}>
+                  <GroupEditor
+                    onSave={g => { onAddGroup(g); groupDropdown.setOpen(false); }}
+                    onCancel={() => groupDropdown.setOpen(false)}
+                    existing={groups.map(g => g.fieldId)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+        {(metrics.length > 0 || groups.length > 0) && (
+          <button
+            style={{ display:'flex', alignItems:'center', justifyContent:'center', width:24, height:52, background:'none', border:'none', cursor:'pointer', color:'#333', flexShrink:0, padding:'0 4px' }}
+            title="Voir les résultats"
+          >
+            <IconChevronRight size={16} />
+          </button>
+        )}
       </div>
     </div>
   );

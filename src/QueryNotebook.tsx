@@ -1,8 +1,9 @@
-import { useReducer, useState } from 'react';
+﻿import { useReducer, useState } from 'react';
 import { queryReducer, initialState } from './engine/reducer';
 import { FilterCondition, Metric, GroupBy, SortItem } from './engine/types';
 import { toSQL } from './engine/sql';
 import { useConfig } from './config/ConfigContext';
+import { DataSection } from './components/DataSection/DataSection';
 import { FilterSection } from './components/FilterSection/FilterSection';
 import { SummarizeSection } from './components/SummarizeSection/SummarizeSection';
 import { SortSection } from './components/SortSection/SortSection';
@@ -49,6 +50,7 @@ export function QueryNotebook() {
     <div className={styles.notebook}>
       <ConfigUpload />
       <div className={styles.sections}>
+        <DataSection />
         <FilterSection filters={state.filters} onAdd={addFilter} onUpdate={updateFilter} onRemove={removeFilter} onClear={clearFilters} />
         <SummarizeSection metrics={state.metrics} groups={state.groups} onAddMetric={addMetric} onRemoveMetric={removeMetric} onAddGroup={addGroup} onRemoveGroup={removeGroup} onClear={clearSummarize} />
         {(showSort || state.sorts.length > 0) && (
